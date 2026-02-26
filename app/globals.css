@@ -1,0 +1,241 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═══════════════════════════════════════════
+   LENIS SMOOTH SCROLL
+   ═══════════════════════════════════════════ */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════
+   BASE STYLES
+   ═══════════════════════════════════════════ */
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer base {
+  :root {
+    --background: 220 15% 7%;
+    --foreground: 40 20% 95%;
+    --card: 220 12% 10%;
+    --card-foreground: 40 20% 95%;
+    --popover: 220 15% 7%;
+    --popover-foreground: 40 20% 95%;
+    --primary: 25 90% 55%;
+    --primary-foreground: 220 15% 7%;
+    --secondary: 220 10% 15%;
+    --secondary-foreground: 40 15% 85%;
+    --muted: 220 10% 15%;
+    --muted-foreground: 220 10% 55%;
+    --accent: 25 80% 50%;
+    --accent-foreground: 40 20% 95%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 10% 18%;
+    --input: 220 10% 18%;
+    --ring: 25 90% 55%;
+    --radius: 0.75rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   DISPLAY TYPOGRAPHY (Cinematic sizes)
+   ═══════════════════════════════════════════ */
+.text-display-xl {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(3rem, 10vw, 10rem);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+}
+
+.text-display-lg {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(2.5rem, 7vw, 7rem);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+}
+
+.text-display-md {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(2rem, 5vw, 5rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.text-display-sm {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(1.5rem, 3vw, 3rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+}
+
+.font-heading {
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.font-body {
+  font-family: 'Inter', sans-serif;
+}
+
+/* ═══════════════════════════════════════════
+   SECTION GRADIENTS
+   ═══════════════════════════════════════════ */
+.gradient-dark {
+  background: linear-gradient(180deg, 
+    hsl(220, 15%, 7%) 0%, 
+    hsl(220, 12%, 10%) 100%
+  );
+}
+
+.gradient-warm {
+  background: linear-gradient(180deg, 
+    hsl(220, 12%, 10%) 0%, 
+    hsl(15, 20%, 12%) 50%,
+    hsl(20, 40%, 18%) 100%
+  );
+}
+
+.gradient-hero {
+  background: linear-gradient(180deg, 
+    hsl(220, 15%, 5%) 0%, 
+    hsl(220, 15%, 8%) 40%,
+    hsl(220, 12%, 12%) 100%
+  );
+}
+
+.gradient-footer {
+  background: linear-gradient(180deg, 
+    hsl(220, 12%, 10%) 0%, 
+    hsl(15, 25%, 14%) 40%,
+    hsl(20, 50%, 22%) 100%
+  );
+}
+
+/* ═══════════════════════════════════════════
+   MORPHING SVG ANIMATIONS
+   ═══════════════════════════════════════════ */
+@keyframes morph-path {
+  0%, 100% {
+    d: path("M 100 0 C 155 0 200 45 200 100 C 200 155 155 200 100 200 C 45 200 0 155 0 100 C 0 45 45 0 100 0 Z");
+  }
+  25% {
+    d: path("M 100 0 C 170 20 180 45 200 100 C 180 170 155 200 100 200 C 30 180 0 155 0 100 C 20 30 45 0 100 0 Z");
+  }
+  50% {
+    d: path("M 100 0 C 155 0 200 30 200 100 C 200 170 170 200 100 200 C 30 200 0 170 0 100 C 0 30 45 0 100 0 Z");
+  }
+  75% {
+    d: path("M 100 0 C 170 0 200 45 200 100 C 200 155 170 200 100 200 C 45 200 0 170 0 100 C 0 45 30 0 100 0 Z");
+  }
+}
+
+/* ═══════════════════════════════════════════
+   SCROLL PROGRESS BAR
+   ═══════════════════════════════════════════ */
+.scroll-progress {
+  transform-origin: left;
+  background: linear-gradient(90deg, 
+    hsl(25, 90%, 55%) 0%, 
+    hsl(35, 95%, 60%) 50%,
+    hsl(15, 85%, 50%) 100%
+  );
+}
+
+/* ═══════════════════════════════════════════
+   CURSOR FOLLOWER STYLES
+   ═══════════════════════════════════════════ */
+.cursor-follower {
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════
+   PROJECT CARD HOVER OVERLAY
+   ═══════════════════════════════════════════ */
+.project-card-overlay {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.3) 50%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
+}
+
+/* ═══════════════════════════════════════════
+   PARALLAX TEXT STYLE
+   ═══════════════════════════════════════════ */
+.parallax-text {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  color: transparent;
+  -webkit-text-stroke: 1px hsl(220, 10%, 20%);
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════
+   GRID LINES DECORATION
+   ═══════════════════════════════════════════ */
+.grid-lines {
+  background-image: 
+    linear-gradient(to right, hsl(220, 10%, 15%) 1px, transparent 1px),
+    linear-gradient(to bottom, hsl(220, 10%, 15%) 1px, transparent 1px);
+  background-size: 200px 200px;
+}
+
+/* ═══════════════════════════════════════════
+   SELECTION & FOCUS STYLES
+   ═══════════════════════════════════════════ */
+::selection {
+  background: hsl(25, 90%, 55%);
+  color: hsl(220, 15%, 7%);
+}
+
+:focus-visible {
+  outline: 2px solid hsl(25, 90%, 55%);
+  outline-offset: 2px;
+}
+
+/* ═══════════════════════════════════════════
+   MAGNETIC BUTTON EFFECT
+   ═══════════════════════════════════════════ */
+.magnetic-hover {
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
