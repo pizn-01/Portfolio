@@ -187,6 +187,15 @@ export default function Portfolio() {
       },
       // Advanced Projects
       {
+        title: "Carmazium",
+        description: "A premium, cinematic-first automotive marketplace bridging the gap between digital convenience and physical showroom luxury.",
+        technologies: ["Next.js 15", "Tailwind CSS", "Framer Motion", "Lucide React"],
+        status: "Completed",
+        category: "Advanced",
+        url: "https://carmazium.vercel.app/",
+        level: "advanced",
+      },
+      {
         title: "Nadia Khan Official",
         description: "Celebrity portfolio and brand website with content management, media gallery, and fan engagement features.",
         technologies: ["Next.js", "React", "Strapi", "PostgreSQL"],
