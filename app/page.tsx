@@ -267,6 +267,15 @@ export default function Portfolio() {
         url: "https://www.friendsindustries.com.pk/",
         level: "advanced",
       },
+      {
+        title: "Dinely",
+        description: "SaaS restaurant management platform with table booking, staff management, subscription billing, and business analytics.",
+        technologies: ["Next.js", "TypeScript", "Supabase", "Stripe"],
+        status: "Completed",
+        category: "Advanced",
+        url: "https://www.dinely.co.uk/",
+        level: "advanced",
+      },
     ],
     [],
   )
