@@ -1,244 +1,218 @@
 "use client"
 
-import { useState, useMemo, useCallback } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import SectionReveal from "@/components/SectionReveal"
-import { Badge } from "@/components/ui/badge"
-import { ExternalLink } from "lucide-react"
+import { useRef } from "react"
+import gsap from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { useGSAP } from "@gsap/react"
+import { ArrowUpRight, Github } from "lucide-react"
+import SpineBranch from "@/components/motion/SpineBranch"
+import { Reveal, RevealGroup, RevealItem } from "@/components/motion/Reveal"
+import { built, clientWork } from "@/lib/content/projects"
 
-interface Project {
-    title: string
-    description: string
-    technologies: string[]
-    status: string
-    category: string
-    url: string
-    level: string
-}
+gsap.registerPlugin(ScrollTrigger, useGSAP)
 
-interface ProjectsSectionProps {
-    projects: Project[]
-}
+/**
+ * Two tiers, deliberately unequal in weight.
+ *
+ * Owned products get a pinned horizontal gallery — one at a time, full
+ * attention, room for what was actually hard. Client work gets a dense
+ * index below, framed by contribution. The layout itself states which is
+ * the stronger claim.
+ */
+export default function ProjectsSection() {
+  const root = useRef<HTMLDivElement>(null)
+  const track = useRef<HTMLDivElement>(null)
 
-export default function ProjectsSection({ projects }: ProjectsSectionProps) {
-    const [activeFilter, setActiveFilter] = useState("all")
-    const [showAllProjects, setShowAllProjects] = useState(false)
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia()
 
-    const filteredProjects = useMemo(() => {
-        const filtered = activeFilter === "all" ? projects : projects.filter((p) => p.level === activeFilter)
-        return showAllProjects ? filtered : filtered.slice(0, 6)
-    }, [activeFilter, showAllProjects, projects])
+      // Pinned horizontal scroll — desktop only. On narrow screens the
+      // track falls back to a native swipe, which is better than a pin
+      // that fights the browser's own gestures.
+      mm.add("(min-width: 1024px) and (prefers-reduced-motion: no-preference)", () => {
+        const el = track.current
+        if (!el) return
 
-    const totalFilteredProjects = useMemo(
-        () => (activeFilter === "all" ? projects.length : projects.filter((p) => p.level === activeFilter).length),
-        [activeFilter, projects],
-    )
+        // The track is `overflow-visible` at this breakpoint, so it is as
+        // wide as its content and scrollWidth === clientWidth. Measure the
+        // travel against the viewport instead, or the pin gets zero length.
+        const distance = () =>
+          Math.max(0, el.scrollWidth - document.documentElement.clientWidth)
 
-    const handleFilterChange = useCallback((filter: string) => {
-        setActiveFilter(filter)
-        setShowAllProjects(false)
-    }, [])
+        gsap.to(el, {
+          x: () => -distance(),
+          ease: "none", // scrubbed
+          scrollTrigger: {
+            trigger: ".gallery-pin",
+            start: "top top",
+            end: () => `+=${distance()}`,
+            pin: true,
+            scrub: 0.8,
+            invalidateOnRefresh: true,
+            anticipatePin: 1,
+          },
+        })
+      })
 
-    const filters = [
-        { key: "all", label: "All Work" },
-        { key: "basic", label: "Basic" },
-        { key: "intermediate", label: "Intermediate" },
-        { key: "advanced", label: "Advanced" },
-    ]
+      return () => mm.revert()
+    },
+    { scope: root },
+  )
 
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.12,
-                delayChildren: 0.05,
-            },
-        },
-    }
+  return (
+    <div ref={root} className="relative">
+      {/* ── Tier 1 · Built & owned ───────────────────────────────── */}
+      <section
+        id="projects"
+        style={{
+          paddingTop: "var(--section-y)",
+          paddingLeft: "var(--gutter)",
+          paddingRight: "var(--gutter)",
+        }}
+      >
+        <div className="mx-auto w-full max-w-6xl">
+          <SpineBranch label="Delivery" />
+          <Reveal>
+            <h2 className="display-lg text-antique">
+              Things I
+              <br />
+              <span className="display-accent text-tan">built and own.</span>
+            </h2>
+            <p className="mt-8 max-w-lg text-pretty text-muted">
+              Products where I made every call — schema, services, interface,
+              deployment. Source is public for each.
+            </p>
+          </Reveal>
+        </div>
+      </section>
 
-    const cardVariants = {
-        hidden: { y: 50, opacity: 0 },
-        visible: {
-            y: 0,
-            opacity: 1,
-            transition: {
-                duration: 0.6,
-                ease: [0.25, 0.46, 0.45, 0.94],
-            },
-        },
-    }
+      {/* The wrapper clips; the track translates. `motion-reduce` hands the
+          gallery back to native horizontal scrolling, because without the pin
+          the track would otherwise overflow the document. */}
+      <div className="gallery-pin no-scrollbar relative overflow-x-auto lg:h-[100svh] lg:overflow-hidden motion-reduce:overflow-x-auto motion-reduce:lg:h-auto">
+        <div className="flex h-full items-center">
+          <div
+            ref={track}
+            className="flex gap-6 pb-4 lg:pb-0"
+            style={{ paddingLeft: "var(--gutter)", paddingRight: "var(--gutter)" }}
+          >
+            {built.map((p, i) => (
+              /* min-h rather than a fixed h: flex default `stretch` then
+                 levels every card to the tallest, so no card clips its body. */
+              <article
+                key={p.slug}
+                className="surface surface-hover group relative flex w-[82vw] shrink-0 flex-col justify-between p-8 sm:w-[440px] lg:min-h-[62vh] lg:w-[520px] lg:p-10"
+              >
+                <div>
+                  <div className="flex items-baseline justify-between gap-4">
+                    <span className="meta">
+                      {String(i + 1).padStart(2, "0")} / {String(built.length).padStart(2, "0")}
+                    </span>
+                    <span className="font-mono text-[10px] uppercase tracking-label text-periwinkle">
+                      Owned
+                    </span>
+                  </div>
 
-    const getLevelColor = (level: string) => {
-        switch (level) {
-            case "basic":
-                return { dot: "bg-emerald-400", border: "border-emerald-400/30", text: "text-emerald-400", bg: "bg-emerald-400/5" }
-            case "intermediate":
-                return { dot: "bg-amber-400", border: "border-amber-400/30", text: "text-amber-400", bg: "bg-amber-400/5" }
-            case "advanced":
-                return { dot: "bg-rose-400", border: "border-rose-400/30", text: "text-rose-400", bg: "bg-rose-400/5" }
-            default:
-                return { dot: "bg-muted-foreground", border: "border-border", text: "text-muted-foreground", bg: "bg-secondary/50" }
-        }
-    }
+                  <h3 className="display-md mt-8 text-antique">{p.title}</h3>
+                  <p className="mt-4 text-pretty text-sm leading-relaxed text-tan">
+                    {p.blurb}
+                  </p>
+                  <p className="mt-6 text-pretty text-sm leading-relaxed text-muted">
+                    {p.detail}
+                  </p>
+                </div>
 
-    return (
-        <section id="projects" className="py-32 px-6 sm:px-8 lg:px-12 relative gradient-dark">
-            {/* Background decorative number */}
-            <div className="absolute top-20 right-10 pointer-events-none select-none hidden lg:block">
-                <span className="parallax-text text-[15rem] leading-none opacity-30">04</span>
-            </div>
+                <div className="mt-10">
+                  <ul className="flex flex-wrap gap-2">
+                    {p.stack.map((t) => (
+                      <li
+                        key={t}
+                        className="border border-cadet-lift px-2.5 py-1 font-mono text-[11px] text-muted"
+                      >
+                        {t}
+                      </li>
+                    ))}
+                  </ul>
 
-            <div className="max-w-6xl mx-auto relative z-10">
-                {/* Section header */}
-                <SectionReveal className="mb-16">
-                    <div className="flex items-center gap-4 mb-6">
-                        <span className="text-ember font-heading text-sm uppercase tracking-[0.3em] font-medium">04</span>
-                        <div className="w-12 h-[1px] bg-gradient-to-r from-ember to-transparent" />
-                        <span className="text-ember font-heading text-sm uppercase tracking-[0.3em] font-medium">Projects</span>
-                    </div>
-                    <h2 className="text-display-md text-foreground mb-6">
-                        Portfolio<br />
-                        <span className="text-muted-foreground">Showcase</span>
-                    </h2>
-                    <p className="text-muted-foreground text-lg max-w-xl font-body">
-                        {projects.length}+ completed projects ranging from elegant websites to enterprise applications.
-                    </p>
-                </SectionReveal>
+                  <div className="mt-8 flex items-center gap-6 border-t border-cadet-lift pt-6">
+                    {p.live && (
+                      <a
+                        href={p.live}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-label text-antique transition-colors hover:text-periwinkle"
+                      >
+                        Visit <ArrowUpRight size={13} />
+                      </a>
+                    )}
+                    {p.repo && (
+                      <a
+                        href={p.repo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-label text-muted transition-colors hover:text-periwinkle"
+                      >
+                        <Github size={13} /> Source
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
 
-                {/* Filter tabs */}
-                <SectionReveal delay={0.1} className="mb-12">
-                    <div className="flex flex-wrap gap-2">
-                        {filters.map((filter) => (
-                            <motion.button
-                                key={filter.key}
-                                onClick={() => handleFilterChange(filter.key)}
-                                className={`relative px-5 py-2.5 rounded-full font-heading font-medium text-sm transition-all duration-300 ${activeFilter === filter.key
-                                        ? "text-background"
-                                        : "text-muted-foreground hover:text-foreground"
-                                    }`}
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                            >
-                                {activeFilter === filter.key && (
-                                    <motion.div
-                                        className="absolute inset-0 bg-ember rounded-full"
-                                        layoutId="activeFilter"
-                                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                    />
-                                )}
-                                <span className="relative z-10">
-                                    {filter.label}
-                                    <span className="ml-1.5 text-xs opacity-70">
-                                        ({filter.key === "all"
-                                            ? projects.length
-                                            : projects.filter((p) => p.level === filter.key).length})
-                                    </span>
-                                </span>
-                            </motion.button>
-                        ))}
-                    </div>
-                </SectionReveal>
+      {/* ── Tier 2 · Client & agency ─────────────────────────────── */}
+      <section
+        style={{
+          paddingTop: "var(--section-y)",
+          paddingBottom: "var(--section-y)",
+          paddingLeft: "var(--gutter)",
+          paddingRight: "var(--gutter)",
+        }}
+      >
+        <div className="mx-auto w-full max-w-6xl">
+          <Reveal>
+            <h3 className="display-md text-antique">Client work</h3>
+            <p className="mt-6 max-w-lg text-pretty text-muted">
+              Delivered for employers and their clients. Listed by what I
+              actually contributed, not by what the site became.
+            </p>
+          </Reveal>
 
-                {/* Project grid */}
-                <AnimatePresence mode="wait">
-                    <motion.div
-                        key={`${activeFilter}-${showAllProjects}`}
-                        variants={containerVariants}
-                        initial="hidden"
-                        animate="visible"
-                        exit="hidden"
-                        className="grid md:grid-cols-2 gap-6"
-                    >
-                        {filteredProjects.map((project, index) => {
-                            const colors = getLevelColor(project.level)
-
-                            return (
-                                <motion.div
-                                    key={`${project.title}-${activeFilter}-${index}`}
-                                    variants={cardVariants}
-                                    data-project-card
-                                >
-                                    <a
-                                        href={project.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="group block"
-                                    >
-                                        <div className="h-full p-6 rounded-2xl border border-border bg-card/30 backdrop-blur-sm hover:border-ember/40 transition-all duration-400 relative overflow-hidden">
-                                            {/* Hover gradient overlay */}
-                                            <motion.div
-                                                className="absolute inset-0 bg-gradient-to-br from-ember/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                                            />
-
-                                            <div className="relative z-10">
-                                                {/* Header */}
-                                                <div className="flex items-start justify-between mb-4">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className={`w-2.5 h-2.5 rounded-full ${colors.dot}`} />
-                                                        <h3 className="font-heading font-semibold text-foreground text-lg group-hover:text-ember transition-colors duration-300">
-                                                            {project.title}
-                                                        </h3>
-                                                    </div>
-                                                    <Badge
-                                                        variant="outline"
-                                                        className={`text-xs font-medium ${colors.text} ${colors.border} ${colors.bg} flex-shrink-0`}
-                                                    >
-                                                        {project.category}
-                                                    </Badge>
-                                                </div>
-
-                                                {/* Description */}
-                                                <p className="text-muted-foreground text-sm leading-relaxed mb-5 font-body line-clamp-2">
-                                                    {project.description}
-                                                </p>
-
-                                                {/* Technologies */}
-                                                <div className="flex flex-wrap gap-1.5 mb-5">
-                                                    {project.technologies.map((tech) => (
-                                                        <Badge
-                                                            key={tech}
-                                                            variant="secondary"
-                                                            className="bg-secondary/50 text-secondary-foreground border border-border text-xs py-0.5 px-2 font-medium"
-                                                        >
-                                                            {tech}
-                                                        </Badge>
-                                                    ))}
-                                                </div>
-
-                                                {/* Link */}
-                                                <div className="flex items-center gap-2 text-muted-foreground group-hover:text-ember transition-colors duration-300">
-                                                    <span className="text-sm font-heading font-medium">Visit Site</span>
-                                                    <motion.div
-                                                        animate={{ x: [0, 3, 0] }}
-                                                        transition={{ duration: 1.5, repeat: Infinity }}
-                                                    >
-                                                        <ExternalLink size={14} />
-                                                    </motion.div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </motion.div>
-                            )
-                        })}
-                    </motion.div>
-                </AnimatePresence>
-
-                {/* Show all button */}
-                {!showAllProjects && filteredProjects.length < totalFilteredProjects && (
-                    <SectionReveal delay={0.2} className="text-center mt-12">
-                        <motion.button
-                            onClick={() => setShowAllProjects(true)}
-                            className="px-8 py-4 rounded-full border border-ember/30 text-ember font-heading font-semibold text-sm uppercase tracking-wider hover:bg-ember hover:text-background transition-all duration-300"
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                        >
-                            View All {activeFilter === "all" ? "Projects" : `${activeFilter} Projects`} ({totalFilteredProjects})
-                        </motion.button>
-                    </SectionReveal>
-                )}
-            </div>
-        </section>
-    )
+          <RevealGroup className="mt-14 border-t border-cadet-lift">
+            {clientWork.map((p) => (
+              <RevealItem key={p.slug}>
+                <a
+                  href={p.live}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group grid grid-cols-1 items-baseline gap-2 border-b border-cadet-lift py-5 transition-colors duration-500 ease-spine hover:bg-cadet/30 md:grid-cols-12 md:gap-6"
+                >
+                  <span className="font-mono text-sm text-antique transition-colors group-hover:text-periwinkle md:col-span-3">
+                    {p.title}
+                  </span>
+                  <span className="text-sm text-muted md:col-span-4">
+                    {p.blurb}
+                  </span>
+                  <span className="meta md:col-span-3">{p.contribution}</span>
+                  <span className="flex items-center justify-start gap-2 md:col-span-2 md:justify-end">
+                    <span className="meta hidden lg:inline">
+                      {p.stack[0]}
+                    </span>
+                    <ArrowUpRight
+                      size={14}
+                      className="text-muted-deep transition-colors group-hover:text-periwinkle"
+                    />
+                  </span>
+                </a>
+              </RevealItem>
+            ))}
+          </RevealGroup>
+        </div>
+      </section>
+    </div>
+  )
 }

@@ -1,30 +1,58 @@
-# Modern portfolio website
+# Portfolio — M. Airaf Adil
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+Single-page portfolio for a Lead Full Stack Engineer. Next.js 14 (App Router),
+TypeScript, Tailwind, GSAP + Framer Motion.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/airaffs-projects/v0-modern-portfolio-website)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/59aN5E2bUwE)
+Live: https://airafadil.vercel.app
 
-## Overview
+## Run
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+```bash
+npm install
+npm run dev
+```
 
-## Deployment
+```bash
+npm run build
+```
 
-Your project is live at:
+## Design system
 
-**[https://vercel.com/airaffs-projects/v0-modern-portfolio-website](https://vercel.com/airaffs-projects/v0-modern-portfolio-website)**
+Palette is fixed and documented in [CLAUDE.md](CLAUDE.md). The short version:
+Space Cadet ground, **Tan carries luxury, Periwinkle carries tech** — the two
+accents never do each other's job. Type is Fraunces (display, WONK axis on),
+Geist (body), JetBrains Mono (data).
 
-## Build your app
+The signature element is **the Spine**: a tan hairline running the full page,
+drawn on scroll, branching once per stack layer — Client, Interface, Service,
+Delivery, Data. Sections are labelled by layer rather than numbered, because
+the layers encode something true and `01 / 02 / 03` doesn't.
 
-Continue building your app on:
+## Structure
 
-**[https://v0.dev/chat/projects/59aN5E2bUwE](https://v0.dev/chat/projects/59aN5E2bUwE)**
+```
+app/
+  layout.tsx          fonts + metadata
+  page.tsx            composition only — no content
+  opengraph-image.tsx generated social card
+  icon.tsx            generated favicon
+lib/content/          all copy and data lives here
+components/motion/    Spine, Reveal, Magnetic, Cursor, SmoothScroll
+components/sections/  one file per section
+```
 
-## How It Works
+**Content never goes in components.** To update a project, a role, or a skill,
+edit `lib/content/`.
 
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+## Motion
+
+GSAP owns anything scrubbed or pinned (the Spine, the hero, the experience
+timeline, the horizontal project gallery). Framer Motion owns entrances and
+hover. Every GSAP animation is wrapped in `gsap.matchMedia` and honours
+`prefers-reduced-motion`; scrubbed tweens use `ease: "none"`.
+
+## Data accuracy
+
+Employment history is kept in sync with LinkedIn. Project stacks for owned
+work are verified against the GitHub API, and client work is described by
+contribution rather than ownership. See CLAUDE.md before editing either.

@@ -1,186 +1,95 @@
-"use client"
+import { ArrowUpRight } from "lucide-react"
+import Section from "@/components/Section"
+import { Reveal } from "@/components/motion/Reveal"
+import Magnetic from "@/components/motion/Magnetic"
+import { site } from "@/lib/content/site"
 
-import { motion } from "framer-motion"
-import SectionReveal from "@/components/SectionReveal"
-import {
-    Mail,
-    Phone,
-    MapPin,
-    Briefcase,
-    Github,
-    Linkedin,
-    Twitter,
-    Instagram,
-    ArrowUpRight,
-} from "lucide-react"
+/**
+ * The inversion — antique ground, cadet type. After a long descent through
+ * the dark this reads as a cut to daylight. It happens exactly once; using
+ * it twice would spend the effect.
+ */
+export default function ContactSection() {
+  const channels = [
+    { k: "Email", v: site.email, href: `mailto:${site.email}` },
+    { k: "Phone", v: site.phone, href: `tel:${site.phone.replace(/\s/g, "")}` },
+    { k: "GitHub", v: "pizn-01", href: site.links.github },
+    { k: "LinkedIn", v: "Muhammad Airaf Adil", href: site.links.linkedin },
+    { k: "Upwork", v: "Freelance profile", href: site.links.upwork },
+    { k: "Location", v: site.location },
+  ]
 
-interface ContactSectionProps {
-    email: string
-    phone: string
-    location: string
-    upworkUrl: string
-    socials: {
-        github: string
-        linkedin: string
-        twitter: string
-        instagram: string
-    }
-}
+  return (
+    <Section id="contact" layer="Data" inverted>
+      <div className="grid gap-16 lg:grid-cols-12 lg:gap-20">
+        <Reveal className="lg:col-span-6">
+          <h2 className="display-lg text-cadet">
+            Let&apos;s build
+            <br />
+            <span className="display-accent">something.</span>
+          </h2>
 
-export default function ContactSection({
-    email,
-    phone,
-    location,
-    upworkUrl,
-    socials,
-}: ContactSectionProps) {
-    const contactItems = [
-        {
-            icon: Mail,
-            label: "Email",
-            value: email,
-            href: `mailto:${email}`,
-        },
-        {
-            icon: Phone,
-            label: "Phone",
-            value: phone,
-            href: `tel:${phone.replace(/\s/g, "")}`,
-        },
-        {
-            icon: MapPin,
-            label: "Location",
-            value: location,
-        },
-        {
-            icon: Briefcase,
-            label: "Upwork",
-            value: "Professional Profile",
-            href: upworkUrl,
-        },
-    ]
+          <p className="mt-8 max-w-md text-pretty leading-relaxed text-cadet/70">
+            Open to select full-stack work — product builds, platform
+            architecture, or taking something half-finished the rest of the way.
+          </p>
 
-    const socialLinks = [
-        { icon: Github, label: "GitHub", href: socials.github },
-        { icon: Linkedin, label: "LinkedIn", href: socials.linkedin },
-        { icon: Twitter, label: "Twitter", href: socials.twitter },
-        { icon: Instagram, label: "Instagram", href: socials.instagram },
-    ]
+          <Magnetic className="mt-12 inline-block">
+            <a
+              href={`mailto:${site.email}`}
+              className="group relative inline-flex items-center gap-3 border border-cadet/30 px-8 py-4 font-mono text-xs uppercase tracking-label text-cadet transition-colors duration-500 ease-spine hover:border-cadet"
+            >
+              <span className="absolute inset-0 origin-left scale-x-0 bg-cadet transition-transform duration-500 ease-spine group-hover:scale-x-100" />
+              <span className="relative transition-colors duration-500 ease-spine group-hover:text-antique">
+                Start a conversation
+              </span>
+              <ArrowUpRight
+                size={13}
+                className="relative transition-colors duration-500 ease-spine group-hover:text-antique"
+              />
+            </a>
+          </Magnetic>
+        </Reveal>
 
-    return (
-        <section id="contact" className="py-32 px-6 sm:px-8 lg:px-12 relative">
-            <div className="max-w-6xl mx-auto">
-                {/* Section header */}
-                <SectionReveal className="mb-20">
-                    <div className="flex items-center gap-4 mb-6">
-                        <span className="text-ember font-heading text-sm uppercase tracking-[0.3em] font-medium">05</span>
-                        <div className="w-12 h-[1px] bg-gradient-to-r from-ember to-transparent" />
-                        <span className="text-ember font-heading text-sm uppercase tracking-[0.3em] font-medium">Contact</span>
-                    </div>
-                    <h2 className="text-display-md text-foreground mb-6">
-                        Let&apos;s Create<br />
-                        <span className="text-muted-foreground">Together</span>
-                    </h2>
-                    <p className="text-muted-foreground text-lg max-w-xl font-body">
-                        Ready to transform your ideas into exceptional digital experiences?
-                        Let&apos;s collaborate and build something remarkable.
-                    </p>
-                </SectionReveal>
+        <Reveal delay={0.12} className="lg:col-span-6">
+          <dl className="border-t border-cadet/20">
+            {channels.map((c) => {
+              const row = (
+                <>
+                  <dt className="font-mono text-[11px] uppercase tracking-label text-cadet/50">
+                    {c.k}
+                  </dt>
+                  <dd className="mt-1 flex items-center gap-2 font-mono text-sm text-cadet">
+                    {c.v}
+                    {c.href && (
+                      <ArrowUpRight
+                        size={13}
+                        className="opacity-0 transition-opacity duration-500 ease-spine group-hover:opacity-100"
+                      />
+                    )}
+                  </dd>
+                </>
+              )
 
-                <div className="grid lg:grid-cols-2 gap-16">
-                    {/* Contact info */}
-                    <div className="space-y-4">
-                        {contactItems.map((item, index) => (
-                            <motion.div
-                                key={item.label}
-                                initial={{ opacity: 0, x: -30 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                transition={{ delay: index * 0.1, duration: 0.5 }}
-                                viewport={{ once: true }}
-                            >
-                                {item.href ? (
-                                    <a
-                                        href={item.href}
-                                        target={item.href.startsWith("http") ? "_blank" : undefined}
-                                        rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                                        className="group flex items-center gap-4 p-5 rounded-2xl border border-border bg-card/30 hover:border-ember/30 hover:bg-ember/5 transition-all duration-300"
-                                    >
-                                        <div className="w-12 h-12 rounded-xl bg-ember/10 flex items-center justify-center flex-shrink-0 group-hover:bg-ember/20 transition-colors">
-                                            <item.icon size={20} className="text-ember" />
-                                        </div>
-                                        <div className="min-w-0 flex-1">
-                                            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-1">{item.label}</p>
-                                            <p className="text-foreground font-medium text-sm truncate">{item.value}</p>
-                                        </div>
-                                        <ArrowUpRight size={16} className="text-muted-foreground group-hover:text-ember transition-colors flex-shrink-0" />
-                                    </a>
-                                ) : (
-                                    <div className="flex items-center gap-4 p-5 rounded-2xl border border-border bg-card/30">
-                                        <div className="w-12 h-12 rounded-xl bg-ember/10 flex items-center justify-center flex-shrink-0">
-                                            <item.icon size={20} className="text-ember" />
-                                        </div>
-                                        <div>
-                                            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-1">{item.label}</p>
-                                            <p className="text-foreground font-medium text-sm">{item.value}</p>
-                                        </div>
-                                    </div>
-                                )}
-                            </motion.div>
-                        ))}
-                    </div>
-
-                    {/* Social links + CTA */}
-                    <div className="space-y-8">
-                        <SectionReveal direction="right" delay={0.2}>
-                            <h3 className="text-xl font-heading font-semibold text-foreground mb-6">
-                                Connect With Me
-                            </h3>
-                            <div className="grid grid-cols-2 gap-3">
-                                {socialLinks.map((social, index) => (
-                                    <motion.a
-                                        key={social.label}
-                                        href={social.href}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        initial={{ opacity: 0, y: 20 }}
-                                        whileInView={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.3 + index * 0.08 }}
-                                        whileHover={{ scale: 1.03, y: -2 }}
-                                        whileTap={{ scale: 0.97 }}
-                                        viewport={{ once: true }}
-                                        className="group flex items-center justify-center gap-3 p-4 rounded-xl border border-border bg-card/30 hover:border-ember/30 hover:bg-ember/5 transition-all duration-300"
-                                    >
-                                        <social.icon size={18} className="text-muted-foreground group-hover:text-ember transition-colors" />
-                                        <span className="text-sm font-heading font-medium text-muted-foreground group-hover:text-foreground transition-colors">
-                                            {social.label}
-                                        </span>
-                                    </motion.a>
-                                ))}
-                            </div>
-                        </SectionReveal>
-
-                        <SectionReveal direction="right" delay={0.4}>
-                            <motion.a
-                                href={`mailto:${email}`}
-                                className="group block w-full p-6 rounded-2xl bg-ember text-center hover:bg-ember-dark transition-colors duration-300"
-                                whileHover={{ scale: 1.01 }}
-                                whileTap={{ scale: 0.99 }}
-                            >
-                                <span className="text-white font-heading font-semibold text-lg">
-                                    Start a Project Together
-                                </span>
-                                <motion.span
-                                    className="inline-block ml-2"
-                                    animate={{ x: [0, 4, 0] }}
-                                    transition={{ duration: 1.5, repeat: Infinity }}
-                                >
-                                    →
-                                </motion.span>
-                            </motion.a>
-                        </SectionReveal>
-                    </div>
+              return c.href ? (
+                <a
+                  key={c.k}
+                  href={c.href}
+                  target={c.href.startsWith("http") ? "_blank" : undefined}
+                  rel={c.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                  className="group block border-b border-cadet/20 py-5 transition-colors duration-500 ease-spine hover:bg-cadet/[0.06]"
+                >
+                  {row}
+                </a>
+              ) : (
+                <div key={c.k} className="border-b border-cadet/20 py-5">
+                  {row}
                 </div>
-            </div>
-        </section>
-    )
+              )
+            })}
+          </dl>
+        </Reveal>
+      </div>
+    </Section>
+  )
 }

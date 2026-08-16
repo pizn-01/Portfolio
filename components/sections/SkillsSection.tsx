@@ -1,152 +1,65 @@
-"use client"
+import Section from "@/components/Section"
+import { Reveal, RevealGroup, RevealItem } from "@/components/motion/Reveal"
+import { skillGroups } from "@/lib/content/skills"
 
-import { motion } from "framer-motion"
-import SectionReveal from "@/components/SectionReveal"
-import { Badge } from "@/components/ui/badge"
-import {
-    Code,
-    Globe,
-    Database,
-    Server,
-    Palette,
-} from "lucide-react"
+/**
+ * Grouped by stack layer rather than by "languages / frameworks / tools",
+ * so the shape of the list says something about how the work is structured.
+ * Core items are marked — depth reads as expertise where a flat dump doesn't.
+ */
+export default function SkillsSection() {
+  return (
+    <Section id="skills" layer="Interface">
+      <Reveal>
+        <h2 className="display-lg text-antique">
+          The tools,
+          <br />
+          <span className="display-accent text-tan">by layer.</span>
+        </h2>
+        <p className="mt-8 max-w-lg text-pretty text-muted">
+          Filled marks are what I reach for by default. The rest I&apos;ve
+          shipped with and would pick up again without ceremony.
+        </p>
+      </Reveal>
 
-interface SkillsSectionProps {
-    skills: {
-        languages: string[]
-        frameworks: string[]
-        databases: string[]
-        tools: string[]
-        specialties: string[]
-    }
-}
-
-const categoryIcons: Record<string, React.ElementType> = {
-    languages: Code,
-    frameworks: Globe,
-    databases: Database,
-    tools: Server,
-    specialties: Palette,
-}
-
-const categoryLabels: Record<string, string> = {
-    languages: "Languages",
-    frameworks: "Frameworks",
-    databases: "Databases",
-    tools: "Dev Tools",
-    specialties: "Specialties",
-}
-
-export default function SkillsSection({ skills }: SkillsSectionProps) {
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.1,
-                delayChildren: 0.1,
-            },
-        },
-    }
-
-    const cardVariants = {
-        hidden: { y: 40, opacity: 0 },
-        visible: {
-            y: 0,
-            opacity: 1,
-            transition: {
-                duration: 0.6,
-                ease: [0.25, 0.46, 0.45, 0.94],
-            },
-        },
-    }
-
-    return (
-        <section id="skills" className="py-32 px-6 sm:px-8 lg:px-12 relative gradient-dark">
-            {/* Background decorative number */}
-            <div className="absolute top-20 right-10 pointer-events-none select-none hidden lg:block">
-                <span className="parallax-text text-[15rem] leading-none opacity-30">02</span>
+      <div className="mt-20 space-y-px border-y border-cadet-lift">
+        {skillGroups.map((group, gi) => (
+          <Reveal
+            key={group.layer}
+            delay={gi * 0.06}
+            className="grid gap-6 border-t border-cadet-lift py-10 first:border-t-0 md:grid-cols-12 md:gap-10"
+          >
+            <div className="md:col-span-4">
+              <h3 className="display-sm text-antique">{group.layer}</h3>
+              <p className="meta mt-2">{group.note}</p>
             </div>
 
-            <div className="max-w-6xl mx-auto relative z-10">
-                {/* Section header */}
-                <SectionReveal className="mb-20">
-                    <div className="flex items-center gap-4 mb-6">
-                        <span className="text-ember font-heading text-sm uppercase tracking-[0.3em] font-medium">02</span>
-                        <div className="w-12 h-[1px] bg-gradient-to-r from-ember to-transparent" />
-                        <span className="text-ember font-heading text-sm uppercase tracking-[0.3em] font-medium">Skills</span>
-                    </div>
-                    <h2 className="text-display-md text-foreground mb-6">
-                        Technical<br />
-                        <span className="text-muted-foreground">Arsenal</span>
-                    </h2>
-                    <p className="text-muted-foreground text-lg max-w-xl font-body">
-                        A comprehensive toolkit of modern technologies for building exceptional digital experiences.
-                    </p>
-                </SectionReveal>
-
-                {/* Skills grid */}
-                <motion.div
-                    variants={containerVariants}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, margin: "-100px" }}
-                    className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
-                >
-                    {Object.entries(skills).map(([category, skillList]) => {
-                        const Icon = categoryIcons[category] || Code
-
-                        return (
-                            <motion.div
-                                key={category}
-                                variants={cardVariants}
-                                className="group"
-                            >
-                                <div className="h-full p-6 rounded-2xl border border-border bg-card/30 backdrop-blur-sm hover:border-ember/30 hover:bg-card/50 transition-all duration-300">
-                                    {/* Category header */}
-                                    <div className="flex items-center gap-3 mb-5">
-                                        <motion.div
-                                            whileHover={{ scale: 1.1, rotate: 5 }}
-                                            className="w-10 h-10 rounded-xl bg-ember/10 flex items-center justify-center"
-                                        >
-                                            <Icon size={18} className="text-ember" />
-                                        </motion.div>
-                                        <h3 className="text-lg font-heading font-semibold text-foreground">
-                                            {categoryLabels[category] || category}
-                                        </h3>
-                                    </div>
-
-                                    {/* Skill badges */}
-                                    <div className="flex flex-wrap gap-2">
-                                        {skillList.map((skill: string, skillIndex: number) => (
-                                            <motion.div
-                                                key={skill}
-                                                initial={{ opacity: 0, scale: 0.8 }}
-                                                whileInView={{ opacity: 1, scale: 1 }}
-                                                transition={{
-                                                    delay: skillIndex * 0.03,
-                                                    type: "spring",
-                                                    stiffness: 200,
-                                                    damping: 20,
-                                                }}
-                                                whileHover={{ scale: 1.05, y: -2 }}
-                                                viewport={{ once: true }}
-                                            >
-                                                <Badge
-                                                    variant="secondary"
-                                                    className="bg-secondary/50 text-secondary-foreground hover:bg-ember/10 hover:text-ember border border-border hover:border-ember/30 transition-all duration-200 cursor-default text-xs py-1 px-2.5 font-medium"
-                                                >
-                                                    {skill}
-                                                </Badge>
-                                            </motion.div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </motion.div>
-                        )
-                    })}
-                </motion.div>
-            </div>
-        </section>
-    )
+            <RevealGroup className="flex flex-wrap gap-x-3 gap-y-3 md:col-span-8 md:pt-2">
+              {group.items.map((item) => (
+                <RevealItem key={item.name}>
+                  <span
+                    className={
+                      item.core
+                        ? "inline-flex items-center gap-2 border border-periwinkle/40 bg-periwinkle-ghost px-3.5 py-2 font-mono text-xs text-periwinkle"
+                        : "inline-flex items-center gap-2 border border-cadet-lift px-3.5 py-2 font-mono text-xs text-muted"
+                    }
+                  >
+                    <span
+                      aria-hidden="true"
+                      className={
+                        item.core
+                          ? "h-1 w-1 rounded-full bg-periwinkle"
+                          : "h-1 w-1 rounded-full border border-muted-deep"
+                      }
+                    />
+                    {item.name}
+                  </span>
+                </RevealItem>
+              ))}
+            </RevealGroup>
+          </Reveal>
+        ))}
+      </div>
+    </Section>
+  )
 }
