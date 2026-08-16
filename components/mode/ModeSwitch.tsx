@@ -45,7 +45,7 @@ export default function ModeSwitch() {
 
     // Released on a timer rather than on the timeline, because this component
     // is replaced by the destination's own copy long before it finishes.
-    window.setTimeout(() => setBusy(false), 1200)
+    window.setTimeout(() => setBusy(false), 850)
   }
 
   return (

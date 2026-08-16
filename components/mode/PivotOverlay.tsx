@@ -12,10 +12,15 @@ gsap.registerPlugin(ScrollTrigger)
  * The transition between the two personas. Mounted once in the root layout so
  * it survives the route swap — see lib/pivot.ts for why that matters.
  *
- * Shape of the move: the destination's ground sweeps up and covers, the line
+ * Shape of the move: the destination's ground sweeps down and covers, the line
  * turns from vertical (a stack) to horizontal (a schedule) while hidden, and
- * the sheet continues upward to uncover. It reads as passing through rather
+ * the sheet continues downward to uncover. It reads as passing through rather
  * than backing out, because the sheet never reverses direction.
+ *
+ * Budget: ~1s end to end. This is a control someone presses repeatedly, so it
+ * has to be quicker than a transition they watch once. Keep the total here —
+ * lengthening any single step is what pushed the first version to 1.7s and
+ * made it feel sluggish rather than considered.
  */
 export default function PivotOverlay() {
   const root = useRef<HTMLDivElement>(null)
@@ -58,7 +63,7 @@ export default function PivotOverlay() {
       .fromTo(
         sheetEl,
         { scaleY: 0, transformOrigin: "50% 0%" },
-        { scaleY: 1, duration: 0.42 },
+        { scaleY: 1, duration: 0.26 },
       )
       // Navigate under the cover. Next has already prefetched the route, so
       // the new document is usually painted before the sheet lifts.
@@ -75,25 +80,25 @@ export default function PivotOverlay() {
       // themselves visibly a moment after the reveal.
       .call(() => {
         ScrollTrigger.refresh()
-      }, undefined, "+=0.05")
+      }, undefined, "+=0.02")
       .fromTo(
         lineEl,
         { rotate: req.toOperator ? 0 : 90, autoAlpha: 0 },
-        { autoAlpha: 1, duration: 0.14 },
+        { autoAlpha: 1, duration: 0.08 },
       )
       .to(lineEl, {
         rotate: req.toOperator ? 90 : 0,
-        duration: 0.44,
+        duration: 0.26,
       })
-      .to(lineEl, { autoAlpha: 0, duration: 0.14 }, "-=0.04")
+      .to(lineEl, { autoAlpha: 0, duration: 0.09 }, "-=0.04")
       // Uncovers downward too, so the sheet keeps travelling in one direction
       // rather than retreating the way it came. The beat before it lifts gives
       // the arriving route a frame to mount its scroll and ScrollTrigger work —
       // revealing during that was the other half of the stutter.
       .to(
         sheetEl,
-        { scaleY: 0, transformOrigin: "50% 100%", duration: 0.46 },
-        "+=0.1",
+        { scaleY: 0, transformOrigin: "50% 100%", duration: 0.28 },
+        "+=0.05",
       )
   }, [])
 

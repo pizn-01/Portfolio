@@ -4,13 +4,13 @@ import ModeSwitch from "@/components/mode/ModeSwitch"
 import Atmosphere from "@/components/motion/Atmosphere"
 import Cursor from "@/components/motion/Cursor"
 import Parallax from "@/components/motion/Parallax"
+import OperatorHero from "@/components/sections/operator/OperatorHero"
 import OperatorRail from "@/components/sections/operator/OperatorRail"
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/Reveal"
 import {
   conditions,
   context,
   decisions,
-  headline,
   positioning,
   rules,
   ventures,
@@ -56,55 +56,7 @@ export default function OperatorPage() {
         </div>
       </header>
 
-      {/* ── Position ──────────────────────────────────────────── */}
-      <section
-        className="border-b border-op-olive/20"
-        style={{ ...gutter, paddingTop: "clamp(4rem,9vh,7rem)", paddingBottom: "var(--section-y)" }}
-      >
-        <div className="mx-auto w-full max-w-6xl">
-          <Reveal>
-            <p className="font-mono text-[11px] uppercase tracking-label text-op-olive">
-              {positioning.role}
-            </p>
-            <h1 className="display-lg mt-8 text-op-ink">
-              I run engineering.
-              <br />
-              <span className="display-accent">I still review the code.</span>
-            </h1>
-            <p className="mt-10 max-w-2xl text-pretty text-lg leading-relaxed text-op-dim">
-              {positioning.lede}
-            </p>
-          </Reveal>
-
-          {/* The claim is throughput per head, so the numbers lead. */}
-          <Parallax depth={0.05} className="mt-16">
-          <RevealGroup
-            stagger={0.06}
-            className="grid gap-px border border-op-olive/25 bg-op-olive/25 sm:grid-cols-2 lg:grid-cols-4"
-          >
-            {headline.map((m) => (
-              <RevealItem key={m.key} className="h-full">
-                <div className="flex h-full flex-col justify-between bg-op-ground p-6">
-                  <p className="font-mono text-[10px] uppercase tracking-label text-op-olive/70">
-                    {m.key}
-                  </p>
-                  <p className="mt-8 font-mono text-3xl text-op-ink">{m.value}</p>
-                  <p className="mt-2 text-xs leading-relaxed text-op-dim">
-                    {m.caption}
-                  </p>
-                </div>
-              </RevealItem>
-            ))}
-          </RevealGroup>
-          </Parallax>
-
-          <Reveal delay={0.1}>
-            <p className="mt-8 max-w-2xl text-pretty text-sm leading-relaxed text-op-dim">
-              {context.concurrent}
-            </p>
-          </Reveal>
-        </div>
-      </section>
+      <OperatorHero />
 
       {/* ── Decisions — the evidence ──────────────────────────── */}
       <section className="border-b border-op-olive/20" style={section}>
