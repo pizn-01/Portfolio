@@ -94,11 +94,36 @@ export default function HeroSection({
     >
       <div className="grid-hairline absolute inset-0 opacity-70" />
 
-      {/* Oversized ghost word — outlined, never filled */}
-      <div className="pointer-events-none absolute inset-0 flex items-center justify-end overflow-hidden">
-        <span className="hero-ghost display type-outline whitespace-nowrap text-[26vw] leading-none">
-          FULL&nbsp;STACK
-        </span>
+      {/* Oversized ghost word — outlined, never filled.
+          Drawn as SVG text rather than a sized span: `textLength` pins the
+          word to the viewBox width, so it always fits edge to edge instead
+          of overflowing and clipping at the first letter. */}
+      <div className="pointer-events-none absolute inset-0 flex items-center overflow-hidden">
+        <svg
+          aria-hidden="true"
+          className="hero-ghost w-full"
+          viewBox="0 0 1000 190"
+          preserveAspectRatio="xMidYMid meet"
+        >
+          <text
+            x="500"
+            y="150"
+            textAnchor="middle"
+            textLength="960"
+            lengthAdjust="spacingAndGlyphs"
+            fontSize="180"
+            fill="none"
+            stroke="rgba(220, 190, 159, 0.16)"
+            strokeWidth="1"
+            style={{
+              fontFamily: "var(--font-display), Georgia, serif",
+              fontVariationSettings: '"SOFT" 0, "WONK" 1, "opsz" 144',
+              fontWeight: 300,
+            }}
+          >
+            FULL STACK
+          </text>
+        </svg>
       </div>
 
       <div className="hero-inner relative z-10 mx-auto w-full max-w-6xl">

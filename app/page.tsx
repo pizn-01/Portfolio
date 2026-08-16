@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback } from "react"
-import SmoothScroll from "@/components/motion/SmoothScroll"
+import SmoothScroll, { getLenis } from "@/components/motion/SmoothScroll"
 import Spine from "@/components/motion/Spine"
 import Cursor from "@/components/motion/Cursor"
 import Navigation from "@/components/Navigation"
@@ -21,9 +21,17 @@ export default function Page() {
   const scrollTo = useCallback((id: string) => {
     const el = document.getElementById(id)
     if (!el) return
-    const offset = id === "home" ? 0 : el.offsetTop - 64
+
+    // Route through Lenis when it's running — it owns the scroll position and
+    // would overwrite a native scrollTo on the next frame, leaving nav dead.
+    const lenis = getLenis()
+    if (lenis) {
+      lenis.scrollTo(id === "home" ? 0 : el, { offset: -64, duration: 1.2 })
+      return
+    }
+
     window.scrollTo({
-      top: offset,
+      top: id === "home" ? 0 : el.offsetTop - 64,
       behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
         ? "auto"
         : "smooth",

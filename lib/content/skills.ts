@@ -1,12 +1,10 @@
 /**
- * Cut from ~60 tags to 24.
+ * Grouped by stack layer, so the shape of the list says something about how
+ * the work is structured rather than being an alphabet soup of tags.
  *
- * The old list carried React, Vue, Angular, Nuxt, Java, XQuery, Oracle NoSQL
- * and "LeSS Framework" simultaneously. Breadth at that scale reads as a
- * keyword dump and flattens the signal on what's actually deep. What remains
- * is what shows up in the repos and the employment history.
- *
- * Groups mirror the Spine's stack layers, so structure encodes something true.
+ * The bar for inclusion: it shows up in a repo, or in the employment history.
+ * `core` marks what gets reached for by default — that distinction is what
+ * keeps a longer list from flattening into noise.
  */
 
 export type SkillGroup = {
@@ -24,9 +22,15 @@ export const skillGroups: SkillGroup[] = [
       { name: "Next.js", core: true },
       { name: "TypeScript", core: true },
       { name: "Tailwind CSS", core: true },
+      { name: "React Native", core: true },
       { name: "Framer Motion" },
       { name: "GSAP" },
-      { name: "React Native" },
+      { name: "Vite" },
+      { name: "Radix UI" },
+      { name: "TanStack Query" },
+      { name: "React Hook Form" },
+      { name: "Zod" },
+      { name: "Sass / SCSS" },
     ],
   },
   {
@@ -35,10 +39,15 @@ export const skillGroups: SkillGroup[] = [
     items: [
       { name: "Node.js", core: true },
       { name: "Express", core: true },
-      { name: "Python" },
       { name: "REST APIs", core: true },
+      { name: "Next.js Route Handlers", core: true },
+      { name: "Python" },
       { name: "GraphQL" },
-      { name: "Passport / Auth" },
+      { name: "Supabase Edge Functions" },
+      { name: "Auth & Sessions" },
+      { name: "WebSockets" },
+      { name: "Transactional Email" },
+      { name: "File Uploads" },
     ],
   },
   {
@@ -47,10 +56,13 @@ export const skillGroups: SkillGroup[] = [
     items: [
       { name: "PostgreSQL", core: true },
       { name: "Supabase", core: true },
-      { name: "PL/pgSQL" },
+      { name: "PL/pgSQL", core: true },
       { name: "Drizzle ORM" },
+      { name: "Row Level Security" },
+      { name: "Schema Migrations" },
       { name: "MongoDB" },
       { name: "MySQL" },
+      { name: "Firebase" },
     ],
   },
   {
@@ -59,9 +71,27 @@ export const skillGroups: SkillGroup[] = [
     items: [
       { name: "Docker", core: true },
       { name: "Vercel", core: true },
-      { name: "Fly.io" },
       { name: "Git / GitHub", core: true },
-      { name: "CI/CD" },
+      { name: "CI/CD", core: true },
+      { name: "GitHub Actions" },
+      { name: "Fly.io" },
+      { name: "Railway" },
+      { name: "Render" },
+      { name: "Netlify" },
+    ],
+  },
+  {
+    layer: "Platforms",
+    note: "Where the client already lives",
+    items: [
+      { name: "WordPress", core: true },
+      { name: "WooCommerce", core: true },
+      { name: "Shopify", core: true },
+      { name: "PHP" },
+      { name: "Headless CMS" },
+      { name: "SEO" },
+      { name: "Accessibility" },
+      { name: "Performance" },
     ],
   },
 ]
