@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useRef, useState } from "react"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react"
 import { steps, topics } from "@/lib/content/contact"
@@ -24,16 +24,33 @@ export default function ContactFlow() {
   const [dir, setDir] = useState(1)
 
   const reduced = useReducedMotion()
-  const firstField = useRef<HTMLElement>(null)
   const liveRegion = useRef<HTMLDivElement>(null)
 
-  // Move focus to the new step's first control. Without this the flow is
-  // unusable by keyboard — focus stays on a button that no longer exists.
-  useEffect(() => {
-    if (status === "sent") return
-    const id = window.setTimeout(() => firstField.current?.focus(), reduced ? 0 : 320)
-    return () => window.clearTimeout(id)
-  }, [step, status, reduced])
+  /**
+   * Focus management, without guessing at timing.
+   *
+   * Focus has to land on the new step's first control or the flow is unusable
+   * by keyboard — after a step swaps, focus is left on a button that no longer
+   * exists. But two things make a `useEffect` + `setTimeout` wrong here:
+   *
+   *  - `AnimatePresence mode="wait"` mounts the incoming step only after the
+   *    outgoing one finishes animating, so any fixed delay is a race. A 320ms
+   *    timeout fired before the field existed and focus silently went nowhere.
+   *  - Focusing on mount scrolled the page to the contact form on first load,
+   *    throwing visitors past the entire site.
+   *
+   * So: a callback ref that focuses the node at the moment it mounts, and only
+   * when a step change actually asked for it. `preventScroll` keeps the page
+   * still for someone already reading it.
+   */
+  const wantsFocus = useRef(false)
+
+  const attachFirstField = useCallback((node: HTMLElement | null) => {
+    if (node && wantsFocus.current) {
+      wantsFocus.current = false
+      node.focus({ preventScroll: true })
+    }
+  }, [])
 
   const set = (key: keyof Values, value: string) => {
     setValues((v) => ({ ...v, [key]: value }))
@@ -58,12 +75,14 @@ export default function ContactFlow() {
   const advance = () => {
     if (!validate(step)) return
     setDir(1)
+    wantsFocus.current = true
     if (step < steps.length - 1) setStep((s) => s + 1)
     else void submit()
   }
 
   const back = () => {
     setDir(-1)
+    wantsFocus.current = true
     setFormError(null)
     setStep((s) => Math.max(0, s - 1))
   }
@@ -174,7 +193,7 @@ export default function ContactFlow() {
                     return (
                       <button
                         key={t.value}
-                        ref={i === 0 ? (firstField as React.RefObject<HTMLButtonElement>) : undefined}
+                        ref={i === 0 ? attachFirstField : undefined}
                         type="button"
                         role="radio"
                         aria-checked={selected}
@@ -212,7 +231,7 @@ export default function ContactFlow() {
                   </label>
                   <textarea
                     id="message"
-                    ref={firstField as React.RefObject<HTMLTextAreaElement>}
+                    ref={attachFirstField}
                     value={values.message}
                     onChange={(e) => set("message", e.target.value)}
                     rows={6}
@@ -237,7 +256,7 @@ export default function ContactFlow() {
                     </label>
                     <input
                       id="name"
-                      ref={firstField as React.RefObject<HTMLInputElement>}
+                      ref={attachFirstField}
                       value={values.name}
                       onChange={(e) => set("name", e.target.value)}
                       autoComplete="name"
