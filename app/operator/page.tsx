@@ -1,39 +1,34 @@
 import Link from "next/link"
 import { ArrowUpRight, ArrowLeft } from "lucide-react"
 import ModeSwitch from "@/components/mode/ModeSwitch"
-import ProcessTimeline from "@/components/sections/operator/ProcessTimeline"
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/Reveal"
 import {
-  agencies,
-  engagements,
+  context,
+  decisions,
   headline,
-  ownership,
   positioning,
-  TBC,
+  rules,
+  ventures,
 } from "@/lib/content/operator"
 import { site } from "@/lib/content/site"
-
-/** A figure Airaf hasn't supplied yet — shown as a gap, never as a guess. */
-function Pending({ label }: { label?: string }) {
-  return (
-    <span className="pending inline-flex items-baseline gap-2" title="Not yet supplied">
-      <span aria-hidden="true">{TBC}</span>
-      <span className="font-mono text-[9px] uppercase tracking-label">
-        {label ?? "TBC"}
-      </span>
-    </span>
-  )
-}
 
 const gutter = {
   paddingLeft: "var(--gutter)",
   paddingRight: "var(--gutter)",
 } as const
 
+const section = {
+  ...gutter,
+  paddingTop: "var(--section-y)",
+  paddingBottom: "var(--section-y)",
+} as const
+
 export default function OperatorPage() {
+  const lead = ventures.find((v) => v.lead)
+  const others = ventures.filter((v) => !v.lead)
+
   return (
     <main className="overflow-x-hidden">
-      {/* ── Chrome ────────────────────────────────────────────── */}
       <header
         className="sticky top-0 z-50 border-b border-op-olive/20 bg-op-ground/90 backdrop-blur-md"
         style={gutter}
@@ -60,16 +55,16 @@ export default function OperatorPage() {
               {positioning.role}
             </p>
             <h1 className="display-lg mt-8 text-op-ink">
-              I own the architecture
+              I run engineering.
               <br />
-              <span className="display-accent">and the org chart.</span>
+              <span className="display-accent">I still review the code.</span>
             </h1>
             <p className="mt-10 max-w-2xl text-pretty text-lg leading-relaxed text-op-dim">
               {positioning.lede}
             </p>
           </Reveal>
 
-          {/* The four numbers a delivery hire gets scanned for. */}
+          {/* The claim is throughput per head, so the numbers lead. */}
           <RevealGroup
             stagger={0.06}
             className="mt-16 grid gap-px border border-op-olive/25 bg-op-olive/25 sm:grid-cols-2 lg:grid-cols-4"
@@ -80,116 +75,177 @@ export default function OperatorPage() {
                   <p className="font-mono text-[10px] uppercase tracking-label text-op-olive/70">
                     {m.key}
                   </p>
-                  <p className="mt-8 font-mono text-3xl text-op-ink">
-                    {m.pending ? <Pending /> : m.value}
+                  <p className="mt-8 font-mono text-3xl text-op-ink">{m.value}</p>
+                  <p className="mt-2 text-xs leading-relaxed text-op-dim">
+                    {m.caption}
                   </p>
-                  <p className="mt-2 text-xs text-op-dim">{m.caption}</p>
                 </div>
               </RevealItem>
             ))}
           </RevealGroup>
 
-          <p className="mt-6 font-mono text-[11px] leading-relaxed text-op-olive/60">
-            Figures marked TBC are being compiled. Nothing on this page is
-            estimated or rounded up.
-          </p>
+          <Reveal delay={0.1}>
+            <p className="mt-8 max-w-2xl text-pretty text-sm leading-relaxed text-op-dim">
+              {context.concurrent}
+            </p>
+          </Reveal>
         </div>
       </section>
 
-      {/* ── Operating model ───────────────────────────────────── */}
-      <section
-        className="border-b border-op-olive/20"
-        style={{ ...gutter, paddingTop: "var(--section-y)", paddingBottom: "var(--section-y)" }}
-      >
+      {/* ── Decisions — the evidence ──────────────────────────── */}
+      <section className="border-b border-op-olive/20" style={section}>
         <div className="mx-auto w-full max-w-6xl">
           <Reveal>
             <p className="font-mono text-[11px] uppercase tracking-label text-op-olive">
-              Operating model
+              Two decisions
             </p>
-            <h2 className="display-md mt-6 text-op-ink">Two businesses</h2>
+            <h2 className="display-md mt-6 text-op-ink">
+              What I&apos;d be asked about
+            </h2>
             <p className="mt-6 max-w-xl text-pretty text-op-dim">
-              One sells engineering time, one sells a product. They fail in
-              different ways, which is most of what I&apos;ve learned running both.
+              One process, one technical. Both are things an interviewer can dig
+              into, which is more than a list of capabilities offers.
             </p>
           </Reveal>
 
-          <div className="mt-14 grid gap-6 lg:grid-cols-2">
-            {agencies.map((a) => (
-              <Reveal key={a.kind} as="article" className="border border-op-olive/25 p-7">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <h3 className="font-mono text-base uppercase tracking-wider text-op-ink">
-                      {a.pending ? <Pending label="Name TBC" /> : a.name}
-                    </h3>
-                    <p className="mt-1.5 inline-block bg-op-red px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-label text-black">
-                      {a.kind}
-                    </p>
-                  </div>
-                  <span className="shrink-0 border border-op-olive/30 px-2.5 py-1 font-mono text-[10px] uppercase tracking-label text-op-olive">
-                    {a.role}
-                  </span>
-                </div>
+          <div className="mt-16 grid gap-6 lg:grid-cols-2">
+            {decisions.map((d) => (
+              <Reveal
+                key={d.id}
+                as="article"
+                className="flex flex-col border-t-2 border-op-ink pt-6"
+              >
+                <span className="inline-flex w-fit bg-op-red px-2 py-0.5 font-mono text-[10px] uppercase tracking-label text-black">
+                  {d.kind}
+                </span>
 
-                <p className="mt-6 text-pretty text-sm leading-relaxed text-op-dim">
-                  {a.summary}
-                </p>
+                <h3 className="mt-5 font-mono text-base leading-snug text-op-ink">
+                  {d.title}
+                </h3>
 
-                <p className="mt-7 font-mono text-[10px] uppercase tracking-label text-op-olive/70">
-                  What I own
-                </p>
-                <ul className="mt-3 grid gap-1.5">
-                  {a.owns.map((o) => (
-                    <li key={o} className="flex items-baseline gap-2.5 text-sm text-op-ink">
-                      <span aria-hidden="true" className="h-1 w-1 shrink-0 bg-op-red" />
-                      {o}
-                    </li>
+                <dl className="mt-7 grid gap-5">
+                  {[
+                    { k: "Situation", v: d.situation },
+                    { k: "What I did", v: d.action },
+                    ...(d.rejected ? [{ k: "What I rejected", v: d.rejected }] : []),
+                    { k: "What changed", v: d.result },
+                  ].map((row) => (
+                    <div key={row.k}>
+                      <dt className="font-mono text-[10px] uppercase tracking-label text-op-olive/70">
+                        {row.k}
+                      </dt>
+                      <dd className="mt-1.5 text-pretty text-sm leading-relaxed text-op-ink">
+                        {row.v}
+                      </dd>
+                    </div>
                   ))}
-                </ul>
-
-                <p className="mt-7 border-t border-op-olive/20 pt-4 font-mono text-[11px] text-op-olive/60">
-                  Founded <Pending label="date" /> · Team size <Pending label="n" />
-                </p>
+                </dl>
               </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── Technical ownership ───────────────────────────────── */}
-      <section
-        className="border-b border-op-olive/20"
-        style={{ ...gutter, paddingTop: "var(--section-y)", paddingBottom: "var(--section-y)" }}
-      >
+      {/* ── Ventures ──────────────────────────────────────────── */}
+      <section className="border-b border-op-olive/20" style={section}>
         <div className="mx-auto w-full max-w-6xl">
           <Reveal>
             <p className="font-mono text-[11px] uppercase tracking-label text-op-olive">
-              What I own
+              What I run
             </p>
-            <h2 className="display-md mt-6 text-op-ink">
-              Systems and people
-            </h2>
+            <h2 className="display-md mt-6 text-op-ink">Three, honestly</h2>
+          </Reveal>
+
+          {lead && (
+            <Reveal as="article" className="mt-14 border border-op-olive/30 p-8">
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <h3 className="font-mono text-xl uppercase tracking-wider text-op-ink">
+                    {lead.name}
+                  </h3>
+                  <p className="mt-2 font-mono text-[11px] uppercase tracking-label text-op-olive">
+                    {lead.kind}
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <span className="border border-op-olive/30 px-2.5 py-1 font-mono text-[10px] uppercase tracking-label text-op-olive">
+                    {lead.role}
+                  </span>
+                  <span className="bg-op-ink px-2.5 py-1 font-mono text-[10px] uppercase tracking-label text-op-ground">
+                    {lead.status}
+                  </span>
+                </div>
+              </div>
+              <p className="mt-7 max-w-2xl text-pretty leading-relaxed text-op-dim">
+                {lead.summary}
+              </p>
+            </Reveal>
+          )}
+
+          <RevealGroup stagger={0.06} className="mt-6 grid gap-6 sm:grid-cols-2">
+            {others.map((v) => (
+              <RevealItem key={v.name} className="h-full">
+                <article className="flex h-full flex-col border border-op-olive/25 p-6">
+                  <div className="flex items-start justify-between gap-3">
+                    <h3 className="font-mono text-base uppercase tracking-wider text-op-ink">
+                      {v.name}
+                    </h3>
+                    <span className="shrink-0 border border-op-olive/30 px-2 py-0.5 font-mono text-[10px] uppercase tracking-label text-op-olive">
+                      {v.status}
+                    </span>
+                  </div>
+                  <p className="mt-2 font-mono text-[11px] uppercase tracking-label text-op-olive/70">
+                    {v.kind}
+                  </p>
+                  <p className="mt-5 flex-1 text-pretty text-sm leading-relaxed text-op-dim">
+                    {v.summary}
+                  </p>
+                  {v.url && (
+                    <a
+                      href={v.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-6 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-label text-op-ink transition-opacity hover:opacity-60"
+                    >
+                      Visit <ArrowUpRight size={12} />
+                    </a>
+                  )}
+                </article>
+              </RevealItem>
+            ))}
+          </RevealGroup>
+        </div>
+      </section>
+
+      {/* ── Rules ─────────────────────────────────────────────── */}
+      <section className="border-b border-op-olive/20" style={section}>
+        <div className="mx-auto w-full max-w-6xl">
+          <Reveal>
+            <p className="font-mono text-[11px] uppercase tracking-label text-op-olive">
+              How the studio runs
+            </p>
+            <h2 className="display-md mt-6 text-op-ink">Four rules</h2>
             <p className="mt-6 max-w-xl text-pretty text-op-dim">
-              The two halves a head of engineering is actually hired for. A
-              manager who only owns one of them is a coordinator; an engineer who
-              only owns the other is a tech lead.
+              Not a process diagram. These are the four things actually enforced,
+              and each exists because something went wrong without it.
             </p>
           </Reveal>
 
           <RevealGroup
             stagger={0.05}
-            className="mt-14 grid gap-6 sm:grid-cols-2"
+            className="mt-14 divide-y divide-op-olive/20 border-y border-op-olive/20"
           >
-            {ownership.map((o, i) => (
-              <RevealItem key={o.area} className="h-full">
-                <div className="flex h-full flex-col border-t-2 border-op-ink pt-5">
-                  <p className="font-mono text-[10px] uppercase tracking-label text-op-olive/60">
+            {rules.map((r, i) => (
+              <RevealItem key={r.label}>
+                <div className="grid gap-3 py-7 md:grid-cols-12 md:gap-8">
+                  <p className="font-mono text-[10px] uppercase tracking-label text-op-olive/60 md:col-span-1">
                     {String(i + 1).padStart(2, "0")}
                   </p>
-                  <h3 className="mt-3 font-mono text-sm uppercase tracking-wider text-op-ink">
-                    {o.area}
+                  <h3 className="font-mono text-sm uppercase tracking-wider text-op-ink md:col-span-4">
+                    {r.label}
                   </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-op-dim">
-                    {o.detail}
+                  <p className="text-pretty text-sm leading-relaxed text-op-dim md:col-span-7">
+                    {r.detail}
                   </p>
                 </div>
               </RevealItem>
@@ -198,102 +254,24 @@ export default function OperatorPage() {
         </div>
       </section>
 
-      {/* ── Process — the signature ───────────────────────────── */}
-      <section
-        className="border-b border-op-olive/20"
-        style={{ ...gutter, paddingTop: "var(--section-y)", paddingBottom: "var(--section-y)" }}
-      >
-        <div className="mx-auto w-full max-w-6xl">
-          <Reveal>
-            <p className="font-mono text-[11px] uppercase tracking-label text-op-olive">
-              How I run a project
-            </p>
-            <h2 className="display-md mt-6 text-op-ink">
-              Intake to handover
-            </h2>
-            <p className="mt-6 max-w-xl text-pretty text-op-dim">
-              The engineer side of this site descends through a stack. This runs
-              left to right through time — same line, turned ninety degrees.
-              Red marks what I do personally.
-            </p>
-          </Reveal>
-
-          <ProcessTimeline />
-        </div>
-      </section>
-
-      {/* ── Track record ──────────────────────────────────────── */}
-      <section
-        className="border-b border-op-olive/20"
-        style={{ ...gutter, paddingTop: "var(--section-y)", paddingBottom: "var(--section-y)" }}
-      >
-        <div className="mx-auto w-full max-w-6xl">
-          <Reveal>
-            <p className="font-mono text-[11px] uppercase tracking-label text-op-olive">
-              Track record
-            </p>
-            <h2 className="display-md mt-6 text-op-ink">Delivered</h2>
-          </Reveal>
-
-          {engagements.length === 0 ? (
-            <Reveal className="mt-12 border border-dashed border-op-olive/40 p-10">
-              <p className="font-mono text-sm text-op-ink">Awaiting real engagements</p>
-              <p className="mt-3 max-w-lg text-sm leading-relaxed text-op-dim">
-                This grid stays empty until the actual list is supplied — client
-                or sector, duration, team size, outcome. An invented delivery
-                record is the one thing that would sink this page, so it renders
-                nothing rather than filler.
-              </p>
-            </Reveal>
-          ) : (
-            <div className="mt-12 overflow-x-auto">
-              <table className="w-full min-w-[640px] border-collapse text-sm">
-                <thead>
-                  <tr className="border-b border-op-olive/40">
-                    {["Client", "Sector", "Duration", "Team", "Outcome"].map((h) => (
-                      <th
-                        key={h}
-                        className="py-3 pr-6 text-left font-mono text-[10px] font-normal uppercase tracking-label text-op-olive"
-                      >
-                        {h}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {engagements.map((e) => (
-                    <tr key={e.client} className="border-b border-op-olive/20">
-                      <td className="py-4 pr-6 font-mono text-op-ink">{e.client}</td>
-                      <td className="py-4 pr-6 text-op-dim">{e.sector}</td>
-                      <td className="py-4 pr-6 font-mono text-op-dim">{e.duration}</td>
-                      <td className="py-4 pr-6 font-mono text-op-dim">{e.team}</td>
-                      <td className="py-4 pr-6 text-op-ink">{e.outcome}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* ── Engineering depth — the link back ─────────────────── */}
-      <section style={{ ...gutter, paddingTop: "var(--section-y)", paddingBottom: "var(--section-y)" }}>
+      {/* ── Looking for / contact ─────────────────────────────── */}
+      <section style={section}>
         <div className="mx-auto w-full max-w-6xl">
           <Reveal className="grid gap-10 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-7">
               <p className="font-mono text-[11px] uppercase tracking-label text-op-olive">
-                The other half
+                What I&apos;m looking for
               </p>
               <h2 className="display-md mt-6 text-op-ink">
-                Why engineers listen
+                {positioning.primaryRole}
               </h2>
               <p className="mt-6 max-w-xl text-pretty leading-relaxed text-op-dim">
-                A head of engineering who can&apos;t read the code manages by
-                proxy. Six years of shipping production systems is what makes the
-                architecture calls credible and the estimates hold — and it&apos;s
-                on the other side of this switch.
+                {context.looking}
               </p>
+              <p className="mt-5 font-mono text-sm text-op-ink">
+                {positioning.availability}
+              </p>
+
               <Link
                 href="/"
                 className="group mt-10 inline-flex items-center gap-3 border border-op-ink/30 px-7 py-3.5 font-mono text-xs uppercase tracking-label text-op-ink transition-colors duration-500 ease-spine hover:border-op-ink"
