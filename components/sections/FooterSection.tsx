@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { ArrowUp } from "lucide-react"
+import { ArrowUp, Briefcase, Github, Linkedin, Twitter } from "lucide-react"
 import Parallax from "@/components/motion/Parallax"
 import { site, navItems } from "@/lib/content/site"
 
@@ -38,16 +38,23 @@ export default function FooterSection({
   }, [])
 
   const socials = [
-    { label: "GitHub", href: site.links.github },
-    { label: "LinkedIn", href: site.links.linkedin },
-    { label: "Upwork", href: site.links.upwork },
-    { label: "Twitter", href: site.links.twitter },
+    { label: "GitHub", href: site.links.github, Icon: Github },
+    { label: "LinkedIn", href: site.links.linkedin, Icon: Linkedin },
+    { label: "Upwork", href: site.links.upwork, Icon: Briefcase },
+    { label: "Twitter", href: site.links.twitter, Icon: Twitter },
   ]
 
   return (
+    // The ground itself darkens toward the bottom of the page. The wordmark
+    // stays at full strength and the background falls away behind it, rather
+    // than the type dissolving.
     <footer
-      className="relative overflow-hidden border-t border-cadet-lift bg-ink"
-      style={{ paddingLeft: "var(--gutter)", paddingRight: "var(--gutter)" }}
+      className="relative overflow-hidden border-t border-cadet-lift"
+      style={{
+        paddingLeft: "var(--gutter)",
+        paddingRight: "var(--gutter)",
+        background: "linear-gradient(to bottom, #16203E 0%, #0F1730 45%, #070C1A 100%)",
+      }}
     >
       <div className="mx-auto w-full max-w-6xl">
         {/* ── Status row ─────────────────────────────────────── */}
@@ -110,8 +117,12 @@ export default function FooterSection({
                     href={s.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-mono text-sm text-muted transition-colors duration-500 ease-spine hover:text-periwinkle"
+                    className="group inline-flex items-center gap-2.5 font-mono text-sm text-muted transition-colors duration-500 ease-spine hover:text-periwinkle"
                   >
+                    <s.Icon
+                      size={14}
+                      className="text-muted-deep transition-colors duration-500 ease-spine group-hover:text-periwinkle"
+                    />
                     {s.label}
                   </a>
                 </li>
@@ -143,18 +154,10 @@ export default function FooterSection({
         </nav>
 
         {/* ── Wordmark — the hero's ghost type, returning ────── */}
-        {/* Fades into the ground rather than stopping at a hard edge, so it
-            reads as the page trailing off instead of a headline that got cut. */}
         <Parallax depth={-0.08} className="relative mt-16 flex justify-center">
           <span
             aria-hidden="true"
             className="display type-outline select-none whitespace-nowrap text-[13vw] leading-[0.8]"
-            style={{
-              maskImage:
-                "linear-gradient(to bottom, #000 0%, #000 42%, transparent 92%)",
-              WebkitMaskImage:
-                "linear-gradient(to bottom, #000 0%, #000 42%, transparent 92%)",
-            }}
           >
             AIRAF ADIL
           </span>
