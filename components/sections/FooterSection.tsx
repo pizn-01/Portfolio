@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { ArrowUp } from "lucide-react"
+import Parallax from "@/components/motion/Parallax"
 import { site, navItems } from "@/lib/content/site"
 
 /**
@@ -142,14 +143,14 @@ export default function FooterSection({
         </nav>
 
         {/* ── Wordmark — the hero's ghost type, returning ────── */}
-        <div className="relative mt-16 flex justify-center">
+        <Parallax depth={-0.08} className="relative mt-16 flex justify-center">
           <span
             aria-hidden="true"
             className="display type-outline select-none whitespace-nowrap text-[13vw] leading-[0.8]"
           >
             AIRAF ADIL
           </span>
-        </div>
+        </Parallax>
 
         {/* ── Colophon ───────────────────────────────────────── */}
         <div className="flex flex-wrap items-center justify-between gap-6 border-t border-cadet-lift py-8">

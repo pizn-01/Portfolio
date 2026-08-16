@@ -169,6 +169,27 @@ Project screenshots, an OG image, a favicon. Cannot be generated here.
 npm run dev
 npm run build
 npm run lint
+node scripts/capture-shots.mjs   # refresh project screenshots
 ```
+
+> ⚠️ **Never run `npm run build` while `next dev` is running.** They share
+> `.next`, and the build overwrites the dev server's chunks. The page then
+> loads unstyled, 404s its JS, and reports phantom syntax errors in files that
+> are perfectly valid — this has already cost two debugging detours. Stop the
+> dev server, `rm -rf .next`, then build.
+
+### Contact form env
+```
+RESEND_API_KEY=re_xxx     required, or the form reports it isn't configured
+CONTACT_TO=...            defaults to airafadil619@gmail.com
+CONTACT_FROM=...          must be a Resend-verified sender
+```
+
+### Sizing the pinned gallery
+Cards are capped with `max-h` **and** height-based media variants
+(`[@media(max-height:780px)]`), not viewport height alone. A laptop at
+1366×768 leaves roughly 530px of usable page — a card sized only in `svh`
+overflows there, collides with its own footer, and hides under the navbar.
+Always test the gallery at ~530px viewport height, not just at the window size.
 
 Windows + PowerShell. Deploys to Vercel from `main`.

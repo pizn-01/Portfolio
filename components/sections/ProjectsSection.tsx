@@ -112,9 +112,9 @@ export default function ProjectsSection() {
                  levels every card to the tallest, so no card clips its body. */
               <article
                 key={p.slug}
-                className="surface surface-hover group relative flex w-[82vw] shrink-0 flex-col justify-between overflow-hidden p-8 sm:w-[440px] lg:h-[calc(100svh-9rem)] lg:w-[520px] lg:p-10"
+                className="surface surface-hover group relative flex w-[82vw] shrink-0 flex-col overflow-hidden p-7 sm:w-[440px] lg:max-h-[calc(100svh-7rem)] lg:w-[500px] lg:p-8 [@media(max-height:780px)]:p-6"
               >
-                <div className="flex min-h-0 flex-1 flex-col">
+                <div className="flex flex-col">
                   <div className="flex items-baseline justify-between gap-4">
                     <span className="meta">
                       {String(i + 1).padStart(2, "0")} / {String(built.length).padStart(2, "0")}
@@ -124,11 +124,12 @@ export default function ProjectsSection() {
                     </span>
                   </div>
 
-                  {/* Fixed aspect on mobile; on the pinned desktop layout the
-                      image absorbs the leftover height so the card always
-                      fits the viewport instead of running under the nav. */}
+                  {/* Capped in viewport units as well as by aspect ratio.
+                      Laptop browsers leave far less usable height than the
+                      window suggests, and a card sized only to vh ends up
+                      taller than the space it has. */}
                   {p.image && (
-                    <div className="relative mt-7 aspect-[16/10] shrink-0 overflow-hidden border border-cadet-lift bg-ink lg:aspect-auto lg:min-h-[130px] lg:flex-1 lg:shrink">
+                    <div className="relative mt-6 aspect-[16/10] max-h-[24vh] shrink-0 overflow-hidden border border-cadet-lift bg-ink [@media(max-height:780px)]:mt-5 [@media(max-height:780px)]:max-h-[18vh]">
                       <Image
                         src={p.image}
                         alt={`${p.title} — homepage`}
@@ -143,20 +144,27 @@ export default function ProjectsSection() {
                     </div>
                   )}
 
-                  <h3 className="display-sm mt-6 shrink-0 text-antique lg:text-[2rem]">
+                  <h3 className="display-sm mt-5 shrink-0 text-antique">
                     {p.title}
                   </h3>
-                  <p className="mt-3 shrink-0 text-pretty text-sm leading-relaxed text-tan">
+                  <p className="mt-2.5 shrink-0 text-pretty text-sm leading-relaxed text-tan [@media(max-height:780px)]:line-clamp-2">
                     {p.blurb}
                   </p>
-                  <p className="mt-4 text-pretty text-[13px] leading-relaxed text-muted">
+                  {/* The card's height has to be predictable. Clamped
+                      normally, and dropped entirely on short viewports — a
+                      laptop with browser chrome leaves ~530px, where the
+                      blurb alone carries the card and this paragraph is what
+                      pushed the body over the footer. */}
+                  <p className="mt-3 line-clamp-4 text-pretty text-[13px] leading-relaxed text-muted [@media(max-height:780px)]:hidden">
                     {p.detail}
                   </p>
                 </div>
 
-                <div className="mt-8 shrink-0">
+                <div className="mt-6 shrink-0">
+                  {/* Capped at five so the row never wraps to a third line
+                      and changes the card's height. */}
                   <ul className="flex flex-wrap gap-2">
-                    {p.stack.map((t) => (
+                    {p.stack.slice(0, 5).map((t) => (
                       <li
                         key={t}
                         className="border border-cadet-lift px-2.5 py-1 font-mono text-[11px] text-muted"
@@ -164,9 +172,14 @@ export default function ProjectsSection() {
                         {t}
                       </li>
                     ))}
+                    {p.stack.length > 5 && (
+                      <li className="px-1 py-1 font-mono text-[11px] text-muted-deep">
+                        +{p.stack.length - 5}
+                      </li>
+                    )}
                   </ul>
 
-                  <div className="mt-8 flex items-center gap-6 border-t border-cadet-lift pt-6">
+                  <div className="mt-5 flex items-center gap-6 border-t border-cadet-lift pt-5">
                     {p.live && (
                       <a
                         href={p.live}

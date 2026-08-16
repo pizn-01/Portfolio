@@ -3,6 +3,7 @@
 import { useCallback } from "react"
 import SmoothScroll, { getLenis } from "@/components/motion/SmoothScroll"
 import Spine from "@/components/motion/Spine"
+import Atmosphere from "@/components/motion/Atmosphere"
 import Cursor from "@/components/motion/Cursor"
 import Navigation from "@/components/Navigation"
 import HeroSection from "@/components/sections/HeroSection"
@@ -41,6 +42,7 @@ export default function Page() {
   return (
     <SmoothScroll>
       <Cursor />
+      <Atmosphere />
       <Spine />
       <Navigation onNavigate={scrollTo} />
 

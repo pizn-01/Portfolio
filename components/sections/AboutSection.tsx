@@ -1,5 +1,6 @@
 import Section from "@/components/Section"
 import { Reveal } from "@/components/motion/Reveal"
+import Parallax from "@/components/motion/Parallax"
 import { site, yearsOfExperience } from "@/lib/content/site"
 
 export default function AboutSection() {
@@ -32,9 +33,11 @@ export default function AboutSection() {
           </div>
         </Reveal>
 
-        {/* Facts panel — mono, tabular, quiet */}
+        {/* Facts panel — mono, tabular, quiet. Drifts slightly slower than
+            the prose beside it, which separates the two columns in depth. */}
         <Reveal delay={0.12} className="lg:col-span-5">
-          <dl className="divide-y divide-cadet-lift border-y border-cadet-lift">
+          <Parallax depth={0.06}>
+            <dl className="divide-y divide-cadet-lift border-y border-cadet-lift">
             {[
               { k: "Role", v: site.role },
               { k: "Company", v: "Tech Cabin" },
@@ -52,8 +55,9 @@ export default function AboutSection() {
                   {row.v}
                 </dd>
               </div>
-            ))}
-          </dl>
+              ))}
+            </dl>
+          </Parallax>
         </Reveal>
       </div>
     </Section>

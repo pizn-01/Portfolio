@@ -1,5 +1,6 @@
 import Section from "@/components/Section"
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/Reveal"
+import Parallax from "@/components/motion/Parallax"
 import { skillGroups } from "@/lib/content/skills"
 
 /**
@@ -29,10 +30,12 @@ export default function SkillsSection() {
             delay={gi * 0.06}
             className="grid gap-6 border-t border-cadet-lift py-10 first:border-t-0 md:grid-cols-12 md:gap-10"
           >
-            <div className="md:col-span-4">
+            {/* The layer name hangs back a little as the chips scroll past,
+                so the list reads as sitting in front of its heading. */}
+            <Parallax depth={-0.05} className="md:col-span-4">
               <h3 className="display-sm text-antique">{group.layer}</h3>
               <p className="meta mt-2">{group.note}</p>
-            </div>
+            </Parallax>
 
             <RevealGroup className="flex flex-wrap gap-x-3 gap-y-3 md:col-span-8 md:pt-2">
               {group.items.map((item) => (
