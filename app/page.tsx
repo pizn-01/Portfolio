@@ -53,7 +53,7 @@ export default function Page() {
         <ContactSection />
       </main>
 
-      <FooterSection />
+      <FooterSection onNavigate={scrollTo} />
     </SmoothScroll>
   )
 }

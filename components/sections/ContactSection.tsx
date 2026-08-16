@@ -1,7 +1,7 @@
 import { ArrowUpRight } from "lucide-react"
 import Section from "@/components/Section"
 import { Reveal } from "@/components/motion/Reveal"
-import Magnetic from "@/components/motion/Magnetic"
+import ContactFlow from "@/components/contact/ContactFlow"
 import { site } from "@/lib/content/site"
 
 /**
@@ -10,6 +10,8 @@ import { site } from "@/lib/content/site"
  * it twice would spend the effect.
  */
 export default function ContactSection() {
+  // Direct channels stay visible next to the flow — some people want to skip
+  // the questions, and hiding the email behind three steps would be hostile.
   const channels = [
     { k: "Email", v: site.email, href: `mailto:${site.email}` },
     { k: "Phone", v: site.phone, href: `tel:${site.phone.replace(/\s/g, "")}` },
@@ -34,21 +36,9 @@ export default function ContactSection() {
             architecture, or taking something half-finished the rest of the way.
           </p>
 
-          <Magnetic className="mt-12 inline-block">
-            <a
-              href={`mailto:${site.email}`}
-              className="group relative inline-flex items-center gap-3 border border-cadet/30 px-8 py-4 font-mono text-xs uppercase tracking-label text-cadet transition-colors duration-500 ease-spine hover:border-cadet"
-            >
-              <span className="absolute inset-0 origin-left scale-x-0 bg-cadet transition-transform duration-500 ease-spine group-hover:scale-x-100" />
-              <span className="relative transition-colors duration-500 ease-spine group-hover:text-antique">
-                Start a conversation
-              </span>
-              <ArrowUpRight
-                size={13}
-                className="relative transition-colors duration-500 ease-spine group-hover:text-antique"
-              />
-            </a>
-          </Magnetic>
+          <div className="mt-14">
+            <ContactFlow />
+          </div>
         </Reveal>
 
         <Reveal delay={0.12} className="lg:col-span-6">
