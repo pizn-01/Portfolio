@@ -2,7 +2,11 @@
 
 import { useCallback, useEffect, useRef } from "react"
 import gsap from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { getLenis } from "@/components/motion/SmoothScroll"
 import { registerPivot, type PivotRequest } from "@/lib/pivot"
+
+gsap.registerPlugin(ScrollTrigger)
 
 /**
  * The transition between the two personas. Mounted once in the root layout so
@@ -60,7 +64,18 @@ export default function PivotOverlay() {
       // the new document is usually painted before the sheet lifts.
       .call(() => {
         req.navigate()
+        // Land at the top deterministically. Switching from halfway down a
+        // long page otherwise arrives mid-document and then jumps, and Lenis
+        // holds its own scroll value which won't reset on its own.
+        getLenis()?.scrollTo(0, { immediate: true })
+        window.scrollTo(0, 0)
       })
+      // Re-measure while still covered. The arriving route's triggers are
+      // built against the outgoing page's height otherwise, and correct
+      // themselves visibly a moment after the reveal.
+      .call(() => {
+        ScrollTrigger.refresh()
+      }, undefined, "+=0.05")
       .fromTo(
         lineEl,
         { rotate: req.toOperator ? 0 : 90, autoAlpha: 0 },

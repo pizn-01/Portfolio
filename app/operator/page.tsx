@@ -7,6 +7,7 @@ import Parallax from "@/components/motion/Parallax"
 import OperatorRail from "@/components/sections/operator/OperatorRail"
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/Reveal"
 import {
+  conditions,
   context,
   decisions,
   headline,
@@ -275,16 +276,35 @@ export default function OperatorPage() {
           <Reveal className="grid gap-10 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-7">
               <p className="font-mono text-[11px] uppercase tracking-label text-op-olive">
-                What I&apos;m looking for
+                Terms
               </p>
               <h2 className="display-md mt-6 text-op-ink">
-                {positioning.primaryRole}
+                {context.moveHeading}
               </h2>
               <p className="mt-6 max-w-xl text-pretty leading-relaxed text-op-dim">
-                {context.looking}
+                {context.move}
               </p>
-              <p className="mt-5 font-mono text-sm text-op-ink">
-                {positioning.availability}
+
+              <ol className="mt-9 grid gap-5 border-t border-op-olive/25 pt-7">
+                {conditions.map((c, i) => (
+                  <li key={c.label} className="grid gap-1">
+                    <div className="flex items-baseline gap-3">
+                      <span className="font-mono text-[10px] text-op-red">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <h3 className="font-mono text-sm uppercase tracking-wider text-op-ink">
+                        {c.label}
+                      </h3>
+                    </div>
+                    <p className="pl-8 text-sm leading-relaxed text-op-dim">
+                      {c.detail}
+                    </p>
+                  </li>
+                ))}
+              </ol>
+
+              <p className="mt-9 font-mono text-sm text-op-ink">
+                {positioning.primaryRole} · {positioning.availability}
               </p>
 
               <Link

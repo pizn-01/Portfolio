@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next"
 import { Archivo, Fraunces, Inter_Tight, JetBrains_Mono } from "next/font/google"
 import { GeistSans } from "geist/font/sans"
 import PivotOverlay from "@/components/mode/PivotOverlay"
+import SmoothScroll from "@/components/motion/SmoothScroll"
 import "./globals.css"
 
 // Display — variable serif. The WONK axis is loaded so `.display`
@@ -104,9 +105,13 @@ export default function RootLayout({
       className={`${display.variable} ${GeistSans.variable} ${mono.variable} ${opDisplay.variable} ${opBody.variable}`}
     >
       <body>
-        {children}
-        {/* Mounted here, above the route, so the transition survives the
-            document swap it is covering. */}
+        {/* One Lenis for the whole app. Mounted per-route it was destroyed and
+            re-created on every mode switch — which tears down its rAF loop and
+            gsap.ticker binding mid-transition, then rebuilds them on the frame
+            the sheet is lifting. That was the last of the jank. */}
+        <SmoothScroll>{children}</SmoothScroll>
+        {/* Above the route, so the transition survives the document swap it is
+            covering. */}
         <PivotOverlay />
       </body>
     </html>

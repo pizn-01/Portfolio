@@ -195,8 +195,41 @@ export const rules: Rule[] = [
 export const context = {
   concurrent:
     "All of this was built alongside full-time engineering roles — LogoPidea, then Tech Cabin. I'm not hiding that, and I'd rather answer it up front than have it found on LinkedIn.",
-  looking:
-    "I'm looking for a Head of Development role at a seed-stage company: small enough that the person leading engineering is still expected to build, large enough that the team is a real team.",
+  /**
+   * Framed as criteria rather than a request.
+   *
+   * The earlier version opened "I'm looking for a Head of Development role at
+   * a seed-stage company", which reads as an application from someone who
+   * needs the job. He runs three companies and isn't unemployed — so the
+   * honest position is selectivity, and the page should state the conditions
+   * under which a move makes sense rather than ask to be considered.
+   */
+  moveHeading: "What would make me move",
+  move:
+    "I'm not trying to walk away from what I've built. A Head of Development role would have to be worth leaving it for, which for me means three things.",
 }
+
+export type Condition = {
+  label: string
+  detail: string
+}
+
+export const conditions: Condition[] = [
+  {
+    label: "Engineering is still hands-on",
+    detail:
+      "Small enough that whoever leads it is expected to build. I'd be bad at a job where I only read dashboards.",
+  },
+  {
+    label: "The team is mine to shape",
+    detail:
+      "Hiring, standards and how the work gets reviewed. Not inheriting a process I'm not allowed to change.",
+  },
+  {
+    label: "The product is the business",
+    detail:
+      "Engineering treated as where the company is made rather than a cost line to be managed down.",
+  },
+]
 
 export const TBC = "—"

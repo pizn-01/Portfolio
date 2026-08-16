@@ -1,6 +1,5 @@
 import type { Metadata } from "next"
 import type { ReactNode } from "react"
-import SmoothScroll from "@/components/motion/SmoothScroll"
 
 /**
  * Its own document, not a toggled state — so it can be linked directly,
@@ -31,12 +30,6 @@ export const metadata: Metadata = {
 export default function OperatorLayout({ children }: { children: ReactNode }) {
   // `.operator` swaps the design tokens for the whole subtree — see globals.css.
   //
-  // Lenis runs here too. Without it the engineer route scrolled with easing and
-  // this one didn't, so crossing between them felt like landing on a different
-  // site rather than turning the same one around.
-  return (
-    <SmoothScroll>
-      <div className="operator min-h-screen">{children}</div>
-    </SmoothScroll>
-  )
+  // Lenis lives in the root layout so a single instance spans both routes.
+  return <div className="operator min-h-screen">{children}</div>
 }
