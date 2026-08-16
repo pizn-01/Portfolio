@@ -110,8 +110,8 @@ export const built: Project[] = [
     blurb:
       "Studio site for an engineering practice that works US hours from Pakistan.",
     detail:
-      "The pitch is a scheduling argument, so the page shows it: paired live clocks and a 24-hour band shading the six hours both sides are online. Hand-written HTML, CSS and JS — no framework to draw a timeline.",
-    stack: ["HTML", "CSS", "JavaScript", "Vercel"],
+      "The pitch is a scheduling argument, so the page makes it visible: paired live clocks for both time zones and a 24-hour band that shades the six hours the two working days actually overlap.",
+    stack: ["React", "TypeScript", "Vite", "Tailwind CSS", "Lenis", "Vercel"],
     live: "https://overlap-gules.vercel.app",
     image: "/images/projects/overlap.png",
     repo: "https://github.com/airaf-a633/overlap",
