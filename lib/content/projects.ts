@@ -86,9 +86,20 @@ export const built: Project[] = [
       "Maternal and infant care platform connecting parents with clinical experts.",
     detail:
       "Three audiences on one product — parents booking support, experts running a practice, and clinics onboarding staff — each with its own surface over shared scheduling and profile data.",
-    // TODO(airaf): stack unconfirmed. Not detectable from the client, and this
-    // file's rule is never to invent one. Send the stack and it goes in.
-    stack: [],
+    // Airaf's standard product stack (confirmed by him — it isn't detectable
+    // from the client). Stripe, OpenAI and Cloudflare R2 are part of that
+    // stack generally but aren't listed here until confirmed for this build.
+    stack: [
+      "React",
+      "TypeScript",
+      "Vite",
+      "TanStack Query",
+      "Supabase",
+      "PostgreSQL",
+      "Tailwind CSS",
+      "Radix UI",
+      "Zod",
+    ],
     live: "https://whisperoo.app",
     image: "/images/projects/whisperoo.png",
   },
