@@ -31,12 +31,7 @@ export default function ContactSection() {
             <span className="display-accent">something.</span>
           </h2>
 
-          <p className="mt-8 max-w-md text-pretty leading-relaxed text-cadet/70">
-            Open to select full-stack work — product builds, platform
-            architecture, or taking something half-finished the rest of the way.
-          </p>
-
-          <div className="mt-14">
+          <div className="mt-10">
             <ContactFlow />
           </div>
         </Reveal>

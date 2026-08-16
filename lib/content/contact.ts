@@ -38,26 +38,30 @@ export const topics: Topic[] = [
 
 export type Step = {
   id: "topic" | "brief" | "identity"
-  /** Shown large, in the display face. This is the actual question. */
-  question: string
-  /** One line under it. Sets expectations; never repeats the question. */
-  help: string
+  /**
+   * The prompt. Kept to one quiet line rather than a display-size heading —
+   * the section already says "Let's build something", and a second large
+   * question above the controls just pushed the form down the page.
+   */
+  prompt: string
+  /** Used for the screen-reader announcement and the field's accessible name. */
+  label: string
 }
 
 export const steps: Step[] = [
   {
     id: "topic",
-    question: "What are you building?",
-    help: "Pick the closest one. It only sets the starting point.",
+    prompt: "Pick the closest starting point.",
+    label: "What are you building?",
   },
   {
     id: "brief",
-    question: "Tell me about it.",
-    help: "What it does, who it's for, and what's in the way right now.",
+    prompt: "What it does, who it's for, and what's in the way right now.",
+    label: "Tell me about the project",
   },
   {
     id: "identity",
-    question: "Where do I reply?",
-    help: "I answer every genuine enquiry, usually within a day.",
+    prompt: "Where should I reply? I answer within a day.",
+    label: "Your name and email",
   },
 ]

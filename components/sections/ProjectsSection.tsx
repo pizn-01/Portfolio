@@ -1,77 +1,26 @@
-"use client"
-
-import { useRef } from "react"
-import gsap from "gsap"
-import { ScrollTrigger } from "gsap/ScrollTrigger"
-import { useGSAP } from "@gsap/react"
 import Image from "next/image"
 import { ArrowUpRight, Github } from "lucide-react"
 import SpineBranch from "@/components/motion/SpineBranch"
+import Parallax from "@/components/motion/Parallax"
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/Reveal"
 import { built, clientWork } from "@/lib/content/projects"
-
-gsap.registerPlugin(ScrollTrigger, useGSAP)
 
 /**
  * Two tiers, deliberately unequal in weight.
  *
- * Owned products get a pinned horizontal gallery — one at a time, full
- * attention, room for what was actually hard. Client work gets a dense
- * index below, framed by contribution. The layout itself states which is
- * the stronger claim.
+ * Owned products get full-width editorial rows — the screenshot at a size
+ * worth showing, with the writing beside it. The earlier pinned horizontal
+ * gallery inverted that: it gave the image a quarter of a viewport and the
+ * copy the rest, showed 2.4 cards at a time (neither one-at-a-time nor a
+ * grid), and tied every card's height to the viewport, which is why it broke
+ * on any laptop with browser chrome.
+ *
+ * Client work is a tile grid below — enough to establish range, small enough
+ * that it never competes with the tier above.
  */
 export default function ProjectsSection() {
-  const root = useRef<HTMLDivElement>(null)
-  const track = useRef<HTMLDivElement>(null)
-
-  useGSAP(
-    () => {
-      const mm = gsap.matchMedia()
-
-      // Pinned horizontal scroll — desktop only. On narrow screens the
-      // track falls back to a native swipe, which is better than a pin
-      // that fights the browser's own gestures.
-      mm.add("(min-width: 1024px) and (prefers-reduced-motion: no-preference)", () => {
-        const el = track.current
-        if (!el) return
-
-        // Measure off the last card rather than `scrollWidth`: a flex
-        // container drops its trailing padding from scrollWidth, which left
-        // the final card short of the viewport and looking like it never
-        // arrived. The wrapper is what actually clips, so measure against it.
-        const wrapper = el.parentElement!.parentElement!
-
-        const distance = () => {
-          const cards = el.children
-          const last = cards[cards.length - 1] as HTMLElement | undefined
-          if (!last) return 0
-          const padRight = parseFloat(getComputedStyle(el).paddingRight) || 0
-          const contentRight = last.offsetLeft + last.offsetWidth + padRight
-          return Math.max(0, contentRight - wrapper.clientWidth)
-        }
-
-        gsap.to(el, {
-          x: () => -distance(),
-          ease: "none", // scrubbed
-          scrollTrigger: {
-            trigger: ".gallery-pin",
-            start: "top top",
-            end: () => `+=${distance()}`,
-            pin: true,
-            scrub: 0.8,
-            invalidateOnRefresh: true,
-            anticipatePin: 1,
-          },
-        })
-      })
-
-      return () => mm.revert()
-    },
-    { scope: root },
-  )
-
   return (
-    <div ref={root} className="relative">
+    <div className="relative">
       {/* ── Tier 1 · Built & owned ───────────────────────────────── */}
       <section
         id="projects"
@@ -91,122 +40,134 @@ export default function ProjectsSection() {
             </h2>
             <p className="mt-8 max-w-lg text-pretty text-muted">
               Products where I made every call — schema, services, interface,
-              deployment. Source is public for each.
+              deployment.
             </p>
           </Reveal>
-        </div>
-      </section>
 
-      {/* The wrapper clips; the track translates. `motion-reduce` hands the
-          gallery back to native horizontal scrolling, because without the pin
-          the track would otherwise overflow the document. */}
-      <div className="gallery-pin no-scrollbar relative overflow-x-auto lg:h-[100svh] lg:overflow-hidden motion-reduce:overflow-x-auto motion-reduce:lg:h-auto">
-        <div className="flex h-full items-center">
-          <div
-            ref={track}
-            className="flex gap-6 pb-4 lg:pb-0"
-            style={{ paddingLeft: "var(--gutter)", paddingRight: "var(--gutter)" }}
-          >
-            {built.map((p, i) => (
-              /* min-h rather than a fixed h: flex default `stretch` then
-                 levels every card to the tallest, so no card clips its body. */
-              <article
-                key={p.slug}
-                className="surface surface-hover group relative flex w-[82vw] shrink-0 flex-col overflow-hidden p-7 sm:w-[440px] lg:max-h-[calc(100svh-7rem)] lg:w-[500px] lg:p-8 [@media(max-height:780px)]:p-6"
-              >
-                <div className="flex flex-col">
-                  <div className="flex items-baseline justify-between gap-4">
-                    <span className="meta">
-                      {String(i + 1).padStart(2, "0")} / {String(built.length).padStart(2, "0")}
-                    </span>
-                    <span className="font-mono text-[10px] uppercase tracking-label text-periwinkle">
-                      Owned
-                    </span>
+          <div className="mt-24 space-y-28 lg:space-y-36">
+            {built.map((p, i) => {
+              // Alternating sides. The eye tracks the switch, which keeps a
+              // long list of similar rows from turning into wallpaper.
+              const flipped = i % 2 === 1
+
+              return (
+                <Reveal
+                  key={p.slug}
+                  as="article"
+                  className="group grid items-center gap-10 lg:grid-cols-12 lg:gap-16"
+                >
+                  {/* ── Screenshot ─────────────────────────────── */}
+                  <div
+                    className={`lg:col-span-7 ${
+                      flipped ? "lg:order-2" : "lg:order-1"
+                    }`}
+                  >
+                    {p.image ? (
+                      <a
+                        href={p.live ?? p.repo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block overflow-hidden border border-cadet-lift bg-ink"
+                        tabIndex={-1}
+                        aria-hidden="true"
+                      >
+                        <Parallax depth={0.04}>
+                          <div className="relative aspect-[16/10]">
+                            <Image
+                              src={p.image}
+                              alt=""
+                              fill
+                              sizes="(min-width: 1024px) 55vw, 90vw"
+                              className="object-cover object-top transition-transform duration-[1200ms] ease-spine group-hover:scale-[1.03]"
+                            />
+                            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-ink/60 to-transparent" />
+                          </div>
+                        </Parallax>
+                      </a>
+                    ) : (
+                      <div className="flex aspect-[16/10] items-center justify-center border border-dashed border-cadet-lift">
+                        <span className="meta">Source only</span>
+                      </div>
+                    )}
                   </div>
 
-                  {/* Capped in viewport units as well as by aspect ratio.
-                      Laptop browsers leave far less usable height than the
-                      window suggests, and a card sized only to vh ends up
-                      taller than the space it has. */}
-                  {p.image && (
-                    <div className="relative mt-6 aspect-[16/10] max-h-[24vh] shrink-0 overflow-hidden border border-cadet-lift bg-ink [@media(max-height:780px)]:mt-5 [@media(max-height:780px)]:max-h-[18vh]">
-                      <Image
-                        src={p.image}
-                        alt={`${p.title} — homepage`}
-                        fill
-                        sizes="(min-width: 1024px) 520px, 82vw"
-                        className="object-cover object-top transition-transform duration-[900ms] ease-spine group-hover:scale-[1.04]"
-                      />
-                      {/* Just enough to seat the shot on the page's ground.
-                          Anything heavier and the screenshot stops being
-                          legible, which defeats the point of showing it. */}
-                      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-ink/70 to-transparent" />
+                  {/* ── Writing ────────────────────────────────── */}
+                  <div
+                    className={`lg:col-span-5 ${
+                      flipped ? "lg:order-1" : "lg:order-2"
+                    }`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <span className="meta">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <span className="h-px w-8 bg-tan/40" />
+                      <span className="font-mono text-[10px] uppercase tracking-label text-periwinkle">
+                        Owned
+                      </span>
                     </div>
-                  )}
 
-                  <h3 className="display-sm mt-5 shrink-0 text-antique">
-                    {p.title}
-                  </h3>
-                  <p className="mt-2.5 shrink-0 text-pretty text-sm leading-relaxed text-tan [@media(max-height:780px)]:line-clamp-2">
-                    {p.blurb}
-                  </p>
-                  {/* The card's height has to be predictable. Clamped
-                      normally, and dropped entirely on short viewports — a
-                      laptop with browser chrome leaves ~530px, where the
-                      blurb alone carries the card and this paragraph is what
-                      pushed the body over the footer. */}
-                  <p className="mt-3 line-clamp-4 text-pretty text-[13px] leading-relaxed text-muted [@media(max-height:780px)]:hidden">
-                    {p.detail}
-                  </p>
-                </div>
-
-                <div className="mt-6 shrink-0">
-                  {/* Capped at five so the row never wraps to a third line
-                      and changes the card's height. */}
-                  <ul className="flex flex-wrap gap-2">
-                    {p.stack.slice(0, 5).map((t) => (
-                      <li
-                        key={t}
-                        className="border border-cadet-lift px-2.5 py-1 font-mono text-[11px] text-muted"
-                      >
-                        {t}
-                      </li>
-                    ))}
-                    {p.stack.length > 5 && (
-                      <li className="px-1 py-1 font-mono text-[11px] text-muted-deep">
-                        +{p.stack.length - 5}
-                      </li>
-                    )}
-                  </ul>
-
-                  <div className="mt-5 flex items-center gap-6 border-t border-cadet-lift pt-5">
-                    {p.live && (
+                    <h3 className="display-md mt-6 text-antique">
                       <a
-                        href={p.live}
+                        href={p.live ?? p.repo}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-label text-antique transition-colors hover:text-periwinkle"
+                        className="transition-colors duration-500 ease-spine hover:text-tan"
                       >
-                        Visit <ArrowUpRight size={13} />
+                        {p.title}
                       </a>
+                    </h3>
+
+                    <p className="mt-4 text-pretty leading-relaxed text-tan">
+                      {p.blurb}
+                    </p>
+
+                    <p className="mt-5 text-pretty text-sm leading-relaxed text-muted">
+                      {p.detail}
+                    </p>
+
+                    {p.stack.length > 0 && (
+                      <ul className="mt-7 flex flex-wrap gap-2">
+                        {p.stack.map((t) => (
+                          <li
+                            key={t}
+                            className="border border-cadet-lift px-2.5 py-1 font-mono text-[11px] text-muted"
+                          >
+                            {t}
+                          </li>
+                        ))}
+                      </ul>
                     )}
-                    {p.repo && (
-                      <a
-                        href={p.repo}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-label text-muted transition-colors hover:text-periwinkle"
-                      >
-                        <Github size={13} /> Source
-                      </a>
-                    )}
+
+                    <div className="mt-8 flex items-center gap-7 border-t border-cadet-lift pt-6">
+                      {p.live && (
+                        <a
+                          href={p.live}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-label text-antique transition-colors duration-500 ease-spine hover:text-periwinkle"
+                        >
+                          Visit site <ArrowUpRight size={13} />
+                        </a>
+                      )}
+                      {p.repo && (
+                        <a
+                          href={p.repo}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-label text-muted transition-colors duration-500 ease-spine hover:text-periwinkle"
+                        >
+                          <Github size={13} /> Source
+                        </a>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </article>
-            ))}
+                </Reveal>
+              )
+            })}
           </div>
         </div>
-      </div>
+      </section>
 
       {/* ── Tier 2 · Client & agency ─────────────────────────────── */}
       <section
@@ -226,66 +187,57 @@ export default function ProjectsSection() {
                 Listed by what I contributed, not by what the site became.
               </p>
             </div>
-            <p className="meta">
-              {clientWork.length} engagements · 2019—2024
-            </p>
+            <p className="meta">{clientWork.length} engagements · 2019—2024</p>
           </Reveal>
 
-          {/* A ledger, not a card grid. Column headers make the alignment
-              mean something — without them the columns read as arbitrary. */}
-          <div className="mt-16">
-            <div className="hidden grid-cols-12 gap-6 border-b border-tan/25 pb-3 md:grid">
-              <span className="meta col-span-3">Client</span>
-              <span className="meta col-span-2">Sector</span>
-              <span className="meta col-span-4">Contribution</span>
-              <span className="meta col-span-3 text-right">Built with</span>
-            </div>
-
-            <RevealGroup stagger={0.04}>
-              {clientWork.map((p) => (
-                <RevealItem key={p.slug}>
-                  <a
-                    href={p.live}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group relative grid grid-cols-1 items-baseline gap-1 border-b border-cadet-lift py-5 transition-colors duration-500 ease-spine hover:bg-cadet/40 md:grid-cols-12 md:gap-6"
-                  >
-                    {/* Tan edge marker slides in — the Spine's language,
-                        reused at row scale. */}
-                    <span
-                      aria-hidden="true"
-                      className="absolute -left-4 top-0 h-full w-px origin-top scale-y-0 bg-tan transition-transform duration-500 ease-spine group-hover:scale-y-100"
-                    />
-
-                    <span className="flex items-center gap-2 font-mono text-sm text-antique transition-colors group-hover:text-periwinkle md:col-span-3">
-                      {p.title}
+          {/* Individually bordered rather than a seamless hairline grid: with
+              a `gap-px` background the final row's empty cells show through as
+              a solid block, and the count of fillers needed changes per
+              breakpoint. */}
+          <RevealGroup
+            stagger={0.04}
+            className="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+          >
+            {clientWork.map((p) => (
+              <RevealItem key={p.slug} className="h-full">
+                <a
+                  href={p.live}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex h-full flex-col justify-between border border-cadet-lift p-6 transition-colors duration-500 ease-spine hover:border-periwinkle/30 hover:bg-cadet/40"
+                >
+                  <div>
+                    <div className="flex items-start justify-between gap-3">
+                      <span className="font-mono text-sm text-antique transition-colors duration-500 ease-spine group-hover:text-periwinkle">
+                        {p.title}
+                      </span>
                       <ArrowUpRight
-                        size={13}
-                        className="shrink-0 -translate-x-1 opacity-0 transition-all duration-500 ease-spine group-hover:translate-x-0 group-hover:opacity-100"
+                        size={14}
+                        className="mt-0.5 shrink-0 text-muted-deep transition-all duration-500 ease-spine group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-periwinkle"
                       />
-                    </span>
+                    </div>
 
-                    <span className="meta md:col-span-2">{p.sector}</span>
+                    <p className="meta mt-1.5">{p.sector}</p>
 
-                    <span className="text-sm text-muted md:col-span-4">
+                    <p className="mt-5 text-pretty text-sm leading-relaxed text-muted">
                       {p.contribution}
-                    </span>
+                    </p>
+                  </div>
 
-                    <span className="mt-1 flex flex-wrap gap-1.5 md:col-span-3 md:mt-0 md:justify-end">
-                      {p.stack.map((t) => (
-                        <span
-                          key={t}
-                          className="border border-cadet-lift px-2 py-0.5 font-mono text-[10px] text-muted-deep transition-colors duration-500 ease-spine group-hover:border-periwinkle/30 group-hover:text-muted"
-                        >
-                          {t}
-                        </span>
-                      ))}
-                    </span>
-                  </a>
-                </RevealItem>
-              ))}
-            </RevealGroup>
-          </div>
+                  <ul className="mt-7 flex flex-wrap gap-1.5">
+                    {p.stack.map((t) => (
+                      <li
+                        key={t}
+                        className="border border-cadet-lift px-2 py-0.5 font-mono text-[10px] text-muted-deep transition-colors duration-500 ease-spine group-hover:border-periwinkle/25 group-hover:text-muted"
+                      >
+                        {t}
+                      </li>
+                    ))}
+                  </ul>
+                </a>
+              </RevealItem>
+            ))}
+          </RevealGroup>
         </div>
       </section>
     </div>

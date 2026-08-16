@@ -149,29 +149,12 @@ export default function ContactFlow() {
   const current = steps[step]
 
   return (
-    <div onKeyDown={onKeyDown} className="flex min-h-[22rem] flex-col">
-      {/* Progress — three tan segments, the Spine's language at form scale */}
-      <div className="flex items-center gap-3">
-        <div className="flex gap-1.5" aria-hidden="true">
-          {steps.map((s, i) => (
-            <span
-              key={s.id}
-              className={`h-px w-10 transition-colors duration-500 ease-spine ${
-                i <= step ? "bg-cadet" : "bg-cadet/25"
-              }`}
-            />
-          ))}
-        </div>
-        <span className="font-mono text-[11px] uppercase tracking-label text-cadet/50">
-          {String(step + 1).padStart(2, "0")} / {String(steps.length).padStart(2, "0")}
-        </span>
-      </div>
-
+    <div onKeyDown={onKeyDown} className="flex min-h-[20rem] flex-col">
       <div ref={liveRegion} aria-live="polite" className="sr-only">
-        {`Step ${step + 1} of ${steps.length}. ${current.question}`}
+        {`Step ${step + 1} of ${steps.length}. ${current.label}`}
       </div>
 
-      <div className="relative mt-8 flex-1">
+      <div className="relative flex-1">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={current.id}
@@ -181,12 +164,11 @@ export default function ContactFlow() {
             exit="exit"
             transition={{ duration: reduced ? 0.15 : 0.42, ease: EASE }}
           >
-            <h3 className="display-sm text-cadet">{current.question}</h3>
-            <p className="mt-2 text-sm text-cadet/60">{current.help}</p>
+            <p className="text-sm text-cadet/70">{current.prompt}</p>
 
-            <div className="mt-7">
+            <div className="mt-5">
               {current.id === "topic" && (
-                <div role="radiogroup" aria-label={current.question} className="grid gap-2.5">
+                <div role="radiogroup" aria-label={current.label} className="grid gap-2.5">
                   {topics.map((t, i) => {
                     const selected = values.topic === t.value
                     return (
@@ -226,7 +208,7 @@ export default function ContactFlow() {
               {current.id === "brief" && (
                 <div>
                   <label htmlFor="message" className="sr-only">
-                    {current.question}
+                    {current.label}
                   </label>
                   <textarea
                     id="message"
@@ -338,7 +320,7 @@ export default function ContactFlow() {
               ? "Sending"
               : step === steps.length - 1
                 ? "Send message"
-                : "Continue"}
+                : "Next"}
           </span>
           {status === "sending" ? (
             <Loader2
@@ -352,6 +334,25 @@ export default function ContactFlow() {
             />
           )}
         </button>
+      </div>
+
+      {/* Progress sits under the controls: it reports where you are, and
+          that's a footnote to the question, not a preamble to it. */}
+      <div className="mt-8 flex items-center gap-3">
+        <div className="flex gap-1.5" aria-hidden="true">
+          {steps.map((s, i) => (
+            <span
+              key={s.id}
+              className={`h-px w-10 transition-colors duration-500 ease-spine ${
+                i <= step ? "bg-cadet" : "bg-cadet/25"
+              }`}
+            />
+          ))}
+        </div>
+        <span className="font-mono text-[11px] uppercase tracking-label text-cadet/50">
+          {String(step + 1).padStart(2, "0")} /{" "}
+          {String(steps.length).padStart(2, "0")}
+        </span>
       </div>
     </div>
   )

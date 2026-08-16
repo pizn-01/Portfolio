@@ -143,22 +143,25 @@ export default function FooterSection({
         </nav>
 
         {/* ── Wordmark — the hero's ghost type, returning ────── */}
+        {/* Fades into the ground rather than stopping at a hard edge, so it
+            reads as the page trailing off instead of a headline that got cut. */}
         <Parallax depth={-0.08} className="relative mt-16 flex justify-center">
           <span
             aria-hidden="true"
             className="display type-outline select-none whitespace-nowrap text-[13vw] leading-[0.8]"
+            style={{
+              maskImage:
+                "linear-gradient(to bottom, #000 0%, #000 42%, transparent 92%)",
+              WebkitMaskImage:
+                "linear-gradient(to bottom, #000 0%, #000 42%, transparent 92%)",
+            }}
           >
             AIRAF ADIL
           </span>
         </Parallax>
 
         {/* ── Colophon ───────────────────────────────────────── */}
-        <div className="flex flex-wrap items-center justify-between gap-6 border-t border-cadet-lift py-8">
-          <p className="meta">
-            Built with Next.js, GSAP and Framer Motion · Fraunces, Geist,
-            JetBrains Mono
-          </p>
-
+        <div className="relative flex flex-wrap items-center justify-end gap-6 border-t border-cadet-lift py-8">
           <div className="flex items-center gap-8">
             <p className="meta">© {new Date().getFullYear()} {site.name}</p>
             <button
