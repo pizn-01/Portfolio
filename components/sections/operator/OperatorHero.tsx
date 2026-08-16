@@ -55,13 +55,6 @@ export default function OperatorHero() {
             { autoAlpha: 0, y: 20, duration: 0.55, stagger: 0.07 },
             "-=0.35",
           )
-          // The "now" marker arrives last and settles, the way a today-line
-          // lands on a plan.
-          .from(
-            ".op-now",
-            { xPercent: -140, autoAlpha: 0, duration: 0.8, ease: "power4.out" },
-            "-=0.5",
-          )
       })
 
       return () => mm.revert()
@@ -89,11 +82,6 @@ export default function OperatorHero() {
             style={{ top: `${((i + 1) / (RULES + 1)) * 100}%` }}
           />
         ))}
-        {/* Today-line. The one vermilion element in the hero, and it means
-            position rather than decoration. */}
-        <div className="op-now absolute inset-y-0 left-[62%] w-px bg-op-red/45">
-          <span className="absolute -top-px left-1/2 h-1.5 w-1.5 -translate-x-1/2 bg-op-red" />
-        </div>
       </div>
 
       <div className="relative mx-auto w-full max-w-6xl">
