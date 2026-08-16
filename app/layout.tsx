@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next"
-import { Fraunces, JetBrains_Mono } from "next/font/google"
+import { Archivo, Fraunces, Inter_Tight, JetBrains_Mono } from "next/font/google"
 import { GeistSans } from "geist/font/sans"
 import "./globals.css"
 
@@ -13,6 +13,31 @@ const display = Fraunces({
   display: "swap",
 })
 
+/**
+ * Operator mode's faces. Loaded here rather than in the route so both
+ * personas are available during the pivot transition — a font swapping
+ * mid-animation is exactly the flicker the transition exists to avoid.
+ *
+ * Archivo at 700/800 is declarative and industrial where Fraunces is
+ * considered and luxurious. Deliberately not Space Grotesk, which is the
+ * default pairing on half the portfolios in this category.
+ */
+const opDisplay = Archivo({
+  subsets: ["latin"],
+  weight: ["500", "700", "800"],
+  variable: "--font-op-display",
+  display: "swap",
+})
+
+const opBody = Inter_Tight({
+  subsets: ["latin"],
+  variable: "--font-op-body",
+  display: "swap",
+})
+
+// JetBrains Mono is shared by both modes on purpose: it is the thread that
+// says this is one person, and it is the right face for the numbers the
+// operator side is built on.
 const mono = JetBrains_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
@@ -75,7 +100,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${display.variable} ${GeistSans.variable} ${mono.variable}`}
+      className={`${display.variable} ${GeistSans.variable} ${mono.variable} ${opDisplay.variable} ${opBody.variable}`}
     >
       <body>{children}</body>
     </html>

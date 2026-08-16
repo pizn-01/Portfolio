@@ -44,6 +44,23 @@ module.exports = {
           deep: "#5E6E92",
         },
 
+        // ── Operator mode (/operator) ─────────────────────
+        // Palette B. Chosen because pale olive measures 14.66 against the
+        // engineer ground — a real day/night flip, where the alternative navy
+        // measured 1.09 and would have made the mode switch invisible.
+        //
+        // `op-red` is reserved for operational meaning: status, deadlines,
+        // deltas, the switch. It fails contrast on the olive ground (2.87) and
+        // must never carry body text.
+        op: {
+          ground: "#E7E6C4",
+          ink: "#000000",
+          olive: "#3F3826",
+          red: "#FF3500",
+          rule: "rgba(63, 56, 38, 0.22)",
+          dim: "rgba(63, 56, 38, 0.62)",
+        },
+
         // ── Semantic aliases (shadcn compatibility) ───────
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

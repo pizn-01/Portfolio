@@ -139,6 +139,81 @@ html.lenis body {
     color: #8fa0c4;
   }
 
+  /* ═══════════════════════════════════════════════════════
+     OPERATOR MODE
+     A second design system on the same page, scoped to one
+     class. Everything downstream reads the same variables,
+     so the pivot is a change of tokens, not a fork of the CSS.
+     ═══════════════════════════════════════════════════════ */
+  .operator {
+    --font-display: var(--font-op-display);
+    --font-body: var(--font-op-body);
+
+    background: #e7e6c4;
+    color: #000000;
+    font-family: var(--font-body), system-ui, sans-serif;
+  }
+
+  .operator ::selection {
+    background: #ff3500;
+    color: #e7e6c4;
+  }
+
+  .operator :focus-visible {
+    outline-color: #000000;
+  }
+
+  /* Display type inverts its personality: where Fraunces is set light and
+     wonked, Archivo is set heavy, uppercase and tight. Same page, opposite
+     register. */
+  .operator .display,
+  .operator .display-xl,
+  .operator .display-lg,
+  .operator .display-md,
+  .operator .display-sm {
+    font-family: var(--font-op-display), "Helvetica Neue", Arial, sans-serif;
+    font-variation-settings: normal;
+    font-weight: 800;
+    font-style: normal;
+    text-transform: uppercase;
+    letter-spacing: -0.035em;
+    line-height: 0.94;
+  }
+
+  /* Vermilion measures 2.87 against the olive ground — below even the 3.0
+     large-text floor, so it can never be the text itself. The emphasis is
+     black type over a vermilion bar instead: the accent becomes a mark, which
+     is also the rule for this palette (red only ever means something). */
+  .operator .display-accent {
+    font-style: normal;
+    color: #000000;
+    background-image: linear-gradient(
+      to bottom,
+      transparent 0 64%,
+      #ff3500 64% 82%,
+      transparent 82% 100%
+    );
+    background-repeat: no-repeat;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  .operator .layer-label {
+    color: #3f3826;
+  }
+
+  .operator .meta {
+    color: rgba(63, 56, 38, 0.72);
+  }
+
+  /* A number that has not been supplied yet. Rendered as an obvious gap
+     rather than a plausible-looking figure — an invented metric on a
+     delivery page is the one thing that would sink it. */
+  .pending {
+    color: rgba(63, 56, 38, 0.45);
+    border-bottom: 1px dashed rgba(63, 56, 38, 0.4);
+  }
+
   /* ── Inverted section (Contact) — the cut to daylight ───── */
   .inverted {
     background: #f1e7d7;
