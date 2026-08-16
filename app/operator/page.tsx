@@ -1,6 +1,10 @@
 import Link from "next/link"
 import { ArrowUpRight, ArrowLeft } from "lucide-react"
 import ModeSwitch from "@/components/mode/ModeSwitch"
+import Atmosphere from "@/components/motion/Atmosphere"
+import Cursor from "@/components/motion/Cursor"
+import Parallax from "@/components/motion/Parallax"
+import OperatorRail from "@/components/sections/operator/OperatorRail"
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/Reveal"
 import {
   context,
@@ -28,7 +32,14 @@ export default function OperatorPage() {
   const others = ventures.filter((v) => !v.lead)
 
   return (
-    <main className="overflow-x-hidden">
+    <main className="relative overflow-x-hidden">
+      {/* Same ambient layer and cursor as the engineer route — crossing between
+          the two should feel like turning one site around, not arriving at a
+          second one built by someone else. */}
+      <Cursor />
+      <Atmosphere mode="operator" />
+      <OperatorRail />
+
       <header
         className="sticky top-0 z-50 border-b border-op-olive/20 bg-op-ground/90 backdrop-blur-md"
         style={gutter}
@@ -65,9 +76,10 @@ export default function OperatorPage() {
           </Reveal>
 
           {/* The claim is throughput per head, so the numbers lead. */}
+          <Parallax depth={0.05} className="mt-16">
           <RevealGroup
             stagger={0.06}
-            className="mt-16 grid gap-px border border-op-olive/25 bg-op-olive/25 sm:grid-cols-2 lg:grid-cols-4"
+            className="grid gap-px border border-op-olive/25 bg-op-olive/25 sm:grid-cols-2 lg:grid-cols-4"
           >
             {headline.map((m) => (
               <RevealItem key={m.key} className="h-full">
@@ -83,6 +95,7 @@ export default function OperatorPage() {
               </RevealItem>
             ))}
           </RevealGroup>
+          </Parallax>
 
           <Reveal delay={0.1}>
             <p className="mt-8 max-w-2xl text-pretty text-sm leading-relaxed text-op-dim">
@@ -182,7 +195,8 @@ export default function OperatorPage() {
             </Reveal>
           )}
 
-          <RevealGroup stagger={0.06} className="mt-6 grid gap-6 sm:grid-cols-2">
+          <Parallax depth={0.04} className="mt-6">
+          <RevealGroup stagger={0.06} className="grid gap-6 sm:grid-cols-2">
             {others.map((v) => (
               <RevealItem key={v.name} className="h-full">
                 <article className="flex h-full flex-col border border-op-olive/25 p-6">
@@ -214,6 +228,7 @@ export default function OperatorPage() {
               </RevealItem>
             ))}
           </RevealGroup>
+          </Parallax>
         </div>
       </section>
 

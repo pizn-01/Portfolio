@@ -18,8 +18,25 @@ gsap.registerPlugin(ScrollTrigger, useGSAP)
  * Alpha is kept near the floor on purpose. It should never be nameable as
  * "the glowing blobs"; you should only notice the page has air in it.
  */
-export default function Atmosphere() {
+export default function Atmosphere({
+  /** Palette of the surface it sits behind. Operator mode runs on a light
+      ground, where the same alphas would be invisible — so it gets its own. */
+  mode = "engineer",
+}: {
+  mode?: "engineer" | "operator"
+}) {
   const root = useRef<HTMLDivElement>(null)
+
+  const fields =
+    mode === "operator"
+      ? {
+          a: "radial-gradient(circle, rgba(63,56,38,0.10) 0%, rgba(63,56,38,0) 62%)",
+          b: "radial-gradient(circle, rgba(255,53,0,0.07) 0%, rgba(255,53,0,0) 62%)",
+        }
+      : {
+          a: "radial-gradient(circle, rgba(220,190,159,0.07) 0%, rgba(220,190,159,0) 62%)",
+          b: "radial-gradient(circle, rgba(190,212,249,0.06) 0%, rgba(190,212,249,0) 62%)",
+        }
 
   useGSAP(
     () => {
@@ -90,17 +107,11 @@ export default function Atmosphere() {
     >
       <div
         className="atmo-tan absolute -left-[10%] top-[8%] h-[55vmax] w-[55vmax] rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(220,190,159,0.07) 0%, rgba(220,190,159,0) 62%)",
-        }}
+        style={{ background: fields.a }}
       />
       <div
         className="atmo-peri absolute -right-[14%] top-[46%] h-[62vmax] w-[62vmax] rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(190,212,249,0.06) 0%, rgba(190,212,249,0) 62%)",
-        }}
+        style={{ background: fields.b }}
       />
     </div>
   )

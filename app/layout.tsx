@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next"
 import { Archivo, Fraunces, Inter_Tight, JetBrains_Mono } from "next/font/google"
 import { GeistSans } from "geist/font/sans"
+import PivotOverlay from "@/components/mode/PivotOverlay"
 import "./globals.css"
 
 // Display — variable serif. The WONK axis is loaded so `.display`
@@ -102,7 +103,12 @@ export default function RootLayout({
       lang="en"
       className={`${display.variable} ${GeistSans.variable} ${mono.variable} ${opDisplay.variable} ${opBody.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        {children}
+        {/* Mounted here, above the route, so the transition survives the
+            document swap it is covering. */}
+        <PivotOverlay />
+      </body>
     </html>
   )
 }

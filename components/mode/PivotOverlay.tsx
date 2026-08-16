@@ -1,0 +1,108 @@
+"use client"
+
+import { useCallback, useEffect, useRef } from "react"
+import gsap from "gsap"
+import { registerPivot, type PivotRequest } from "@/lib/pivot"
+
+/**
+ * The transition between the two personas. Mounted once in the root layout so
+ * it survives the route swap — see lib/pivot.ts for why that matters.
+ *
+ * Shape of the move: the destination's ground sweeps up and covers, the line
+ * turns from vertical (a stack) to horizontal (a schedule) while hidden, and
+ * the sheet continues upward to uncover. It reads as passing through rather
+ * than backing out, because the sheet never reverses direction.
+ */
+export default function PivotOverlay() {
+  const root = useRef<HTMLDivElement>(null)
+  const sheet = useRef<HTMLDivElement>(null)
+  const line = useRef<HTMLSpanElement>(null)
+  const tl = useRef<gsap.core.Timeline | null>(null)
+
+  const play = useCallback((req: PivotRequest) => {
+    const rootEl = root.current
+    const sheetEl = sheet.current
+    const lineEl = line.current
+    if (!rootEl || !sheetEl || !lineEl) {
+      req.navigate()
+      return
+    }
+
+    // A second press mid-flight would otherwise stack timelines and strand
+    // the sheet on screen.
+    tl.current?.kill()
+
+    // Colours are the destination's, so the cover already belongs to the
+    // page you're arriving at.
+    const ground = req.toOperator ? "#E7E6C4" : "#0B1224"
+    const stroke = req.toOperator ? "#000000" : "#DCBE9F"
+    gsap.set(sheetEl, { backgroundColor: ground })
+    gsap.set(lineEl, { backgroundColor: stroke })
+
+    tl.current = gsap
+      .timeline({
+        defaults: { ease: "power3.inOut" },
+        onComplete: () => {
+          gsap.set(rootEl, { pointerEvents: "none" })
+        },
+      })
+      .set(rootEl, { pointerEvents: "auto" })
+      // Covers downward from the top. The header is the first thing hidden,
+      // not the last — sweeping up from the bottom left the nav exposed until
+      // the final frames, so it visibly restyled to the destination's colours
+      // before the sheet reached it, which read as the transition tearing.
+      .fromTo(
+        sheetEl,
+        { scaleY: 0, transformOrigin: "50% 0%" },
+        { scaleY: 1, duration: 0.42 },
+      )
+      // Navigate under the cover. Next has already prefetched the route, so
+      // the new document is usually painted before the sheet lifts.
+      .call(() => {
+        req.navigate()
+      })
+      .fromTo(
+        lineEl,
+        { rotate: req.toOperator ? 0 : 90, autoAlpha: 0 },
+        { autoAlpha: 1, duration: 0.14 },
+      )
+      .to(lineEl, {
+        rotate: req.toOperator ? 90 : 0,
+        duration: 0.44,
+      })
+      .to(lineEl, { autoAlpha: 0, duration: 0.14 }, "-=0.04")
+      // Uncovers downward too, so the sheet keeps travelling in one direction
+      // rather than retreating the way it came. The beat before it lifts gives
+      // the arriving route a frame to mount its scroll and ScrollTrigger work —
+      // revealing during that was the other half of the stutter.
+      .to(
+        sheetEl,
+        { scaleY: 0, transformOrigin: "50% 100%", duration: 0.46 },
+        "+=0.1",
+      )
+  }, [])
+
+  useEffect(() => {
+    registerPivot(play)
+    return () => registerPivot(null)
+  }, [play])
+
+  return (
+    <div
+      ref={root}
+      aria-hidden="true"
+      className="pointer-events-none fixed inset-0 z-[200]"
+    >
+      <div
+        ref={sheet}
+        className="absolute inset-0 origin-bottom scale-y-0 will-change-transform"
+      />
+      <div className="absolute inset-0 grid place-items-center">
+        <span
+          ref={line}
+          className="block h-[42vmin] w-px opacity-0 will-change-transform"
+        />
+      </div>
+    </div>
+  )
+}
