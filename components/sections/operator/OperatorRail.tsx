@@ -4,6 +4,8 @@ import { useRef } from "react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { useGSAP } from "@gsap/react"
+import { opSections } from "@/lib/content/operator"
+import { useActiveSection } from "@/components/motion/useActiveSection"
 
 gsap.registerPlugin(ScrollTrigger, useGSAP)
 
@@ -15,8 +17,12 @@ gsap.registerPlugin(ScrollTrigger, useGSAP)
  * right, because this persona measures progress in schedule rather than in
  * layers. It's the pivot made permanent rather than a one-off transition.
  */
+const SECTION_IDS = opSections.map((s) => s.id)
+
 export default function OperatorRail() {
   const root = useRef<HTMLDivElement>(null)
+  const active = useActiveSection(SECTION_IDS)
+  const stage = opSections.find((s) => s.id === active)?.label ?? opSections[0].label
 
   useGSAP(
     () => {
@@ -72,7 +78,15 @@ export default function OperatorRail() {
     >
       <div className="absolute inset-0 bg-op-olive/15" />
       <div className="op-rail-fill absolute inset-0 origin-left bg-op-ink" />
-      <span className="op-rail-head absolute top-1/2 h-[7px] w-[7px] -translate-x-1/2 -translate-y-1/2 bg-op-red" />
+      {/* The head carries the stage label, the way the Spine's node carries a
+          floor. Same idea, turned: this route reports position along a
+          schedule rather than depth in a stack. */}
+      <span className="op-rail-head absolute top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <span className="block h-[7px] w-[7px] bg-op-red" />
+        <span className="absolute left-1/2 top-3 -translate-x-1/2 whitespace-nowrap font-mono text-[9px] uppercase tracking-label text-op-olive/70">
+          {stage}
+        </span>
+      </span>
     </div>
   )
 }

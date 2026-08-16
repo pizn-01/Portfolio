@@ -1,6 +1,8 @@
 import { ArrowUpRight } from "lucide-react"
 import Section from "@/components/Section"
 import { Reveal } from "@/components/motion/Reveal"
+import MaskedHeading from "@/components/motion/MaskedHeading"
+import DoorReveal from "@/components/motion/DoorReveal"
 import ContactFlow from "@/components/contact/ContactFlow"
 import { site } from "@/lib/content/site"
 
@@ -23,13 +25,15 @@ export default function ContactSection() {
 
   return (
     <Section id="contact" layer="Data" inverted>
-      <div className="grid gap-16 lg:grid-cols-12 lg:gap-20">
+      {/* Door reveal #2 of 2. The cut to daylight opens from the seam,
+          which suits a section that is already a hard change of ground. */}
+      <DoorReveal className="grid gap-16 lg:grid-cols-12 lg:gap-20">
         <Reveal className="lg:col-span-6">
-          <h2 className="display-lg text-cadet">
-            Let&apos;s build
-            <br />
-            <span className="display-accent">something.</span>
-          </h2>
+          <MaskedHeading
+            lines={["Let's build", "something."]}
+            accent={1}
+            className="display-lg text-cadet"
+          />
 
           <div className="mt-10">
             <ContactFlow />
@@ -74,7 +78,7 @@ export default function ContactSection() {
             })}
           </dl>
         </Reveal>
-      </div>
+      </DoorReveal>
     </Section>
   )
 }

@@ -1,5 +1,6 @@
 import Section from "@/components/Section"
 import { Reveal } from "@/components/motion/Reveal"
+import MaskedHeading from "@/components/motion/MaskedHeading"
 import Parallax from "@/components/motion/Parallax"
 import { site, yearsOfExperience } from "@/lib/content/site"
 
@@ -8,11 +9,11 @@ export default function AboutSection() {
     <Section id="about" layer="Client">
       <div className="grid gap-16 lg:grid-cols-12 lg:gap-20">
         <Reveal className="lg:col-span-7">
-          <h2 className="display-lg text-antique">
-            I work the
-            <br />
-            <span className="display-accent text-tan">whole stack.</span>
-          </h2>
+          <MaskedHeading
+            lines={["I work the", "whole stack."]}
+            accent={1}
+            className="display-lg text-antique"
+          />
 
           <div className="mt-12 space-y-6 text-pretty text-base leading-relaxed text-muted sm:text-lg">
             <p>

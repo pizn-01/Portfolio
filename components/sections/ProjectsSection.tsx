@@ -3,6 +3,8 @@ import { ArrowUpRight, Github } from "lucide-react"
 import SpineBranch from "@/components/motion/SpineBranch"
 import Parallax from "@/components/motion/Parallax"
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/Reveal"
+import MaskedHeading from "@/components/motion/MaskedHeading"
+import DoorReveal from "@/components/motion/DoorReveal"
 import { built, clientWork } from "@/lib/content/projects"
 
 /**
@@ -33,11 +35,11 @@ export default function ProjectsSection() {
         <div className="mx-auto w-full max-w-6xl">
           <SpineBranch label="Delivery" />
           <Reveal>
-            <h2 className="display-lg text-antique">
-              Things I
-              <br />
-              <span className="display-accent text-tan">built and own.</span>
-            </h2>
+            <MaskedHeading
+              lines={["Things I", "built and own."]}
+              accent={1}
+              className="display-lg text-antique"
+            />
             <p className="mt-8 max-w-lg text-pretty text-muted">
               Products where I made every call — schema, services, interface,
               deployment.
@@ -194,9 +196,11 @@ export default function ProjectsSection() {
               a `gap-px` background the final row's empty cells show through as
               a solid block, and the count of fillers needed changes per
               breakpoint. */}
+          {/* Door reveal #1 of 2 on this route. */}
+          <DoorReveal className="mt-16">
           <RevealGroup
             stagger={0.04}
-            className="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+            className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
           >
             {clientWork.map((p) => (
               <RevealItem key={p.slug} className="h-full">
@@ -238,6 +242,7 @@ export default function ProjectsSection() {
               </RevealItem>
             ))}
           </RevealGroup>
+          </DoorReveal>
         </div>
       </section>
     </div>

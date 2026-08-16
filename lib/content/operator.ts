@@ -232,4 +232,17 @@ export const conditions: Condition[] = [
   },
 ]
 
+/* ── Sections, for the rail's position indicator ───────────────────────
+ * The engineer route names its sections after stack layers. This one names
+ * them after what a reader is actually looking at, because a schedule has
+ * stages rather than layers.
+ */
+
+export const opSections = [
+  { id: "decisions", label: "Decisions" },
+  { id: "ventures", label: "Ventures" },
+  { id: "rules", label: "Rules" },
+  { id: "terms", label: "Terms" },
+]
+
 export const TBC = "—"

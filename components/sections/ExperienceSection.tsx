@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { useGSAP } from "@gsap/react"
 import Section from "@/components/Section"
 import { Reveal } from "@/components/motion/Reveal"
+import MaskedHeading from "@/components/motion/MaskedHeading"
 import { roles, formatPeriod } from "@/lib/content/experience"
 
 gsap.registerPlugin(ScrollTrigger, useGSAP)
@@ -72,11 +73,11 @@ export default function ExperienceSection() {
   return (
     <Section id="experience" layer="Service">
       <Reveal>
-        <h2 className="display-lg text-antique">
-          Where I&apos;ve
-          <br />
-          <span className="display-accent text-tan">been building.</span>
-        </h2>
+        <MaskedHeading
+          lines={["Where I've", "been building."]}
+          accent={1}
+          className="display-lg text-antique"
+        />
       </Reveal>
 
       <div ref={root} className="mt-20">

@@ -4,6 +4,8 @@ import { useRef } from "react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { useGSAP } from "@gsap/react"
+import { layers } from "@/lib/content/site"
+import { useActiveSection } from "@/components/motion/useActiveSection"
 
 gsap.registerPlugin(ScrollTrigger, useGSAP)
 
@@ -19,8 +21,12 @@ gsap.registerPlugin(ScrollTrigger, useGSAP)
  * line stretched by `scaleY` stays crisp at any document height, where a
  * stretched SVG viewBox would distort.
  */
+const SECTION_IDS = layers.map((l) => l.id)
+
 export default function Spine() {
   const root = useRef<HTMLDivElement>(null)
+  const active = useActiveSection(SECTION_IDS)
+  const floor = layers.find((l) => l.id === active)?.label ?? layers[0].label
 
   useGSAP(
     () => {
@@ -72,8 +78,16 @@ export default function Spine() {
       {/* Drawn portion */}
       <div className="spine-trunk absolute inset-0 origin-top bg-tan/40" />
 
-      {/* Reader position */}
-      <div className="spine-node absolute left-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-periwinkle shadow-[0_0_12px_2px_rgba(190,212,249,0.5)]" />
+      {/* Reader position, with the floor it's currently on. The Spine already
+          descends through named layers; this just says which one out loud, the
+          way a lift shows its floor. Information, not ornament — on a page
+          this long the reader always knows where they are. */}
+      <div className="spine-node absolute left-1/2 -translate-x-1/2 -translate-y-1/2">
+        <span className="block h-1.5 w-1.5 rounded-full bg-periwinkle shadow-[0_0_12px_2px_rgba(190,212,249,0.5)]" />
+        <span className="absolute left-4 top-1/2 -translate-y-1/2 whitespace-nowrap font-mono text-[9px] uppercase tracking-label text-tan/70">
+          {floor}
+        </span>
+      </div>
     </div>
   )
 }

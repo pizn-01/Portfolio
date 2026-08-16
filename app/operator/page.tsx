@@ -7,6 +7,8 @@ import Parallax from "@/components/motion/Parallax"
 import OperatorHero from "@/components/sections/operator/OperatorHero"
 import OperatorRail from "@/components/sections/operator/OperatorRail"
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/Reveal"
+import MaskedHeading from "@/components/motion/MaskedHeading"
+import DoorReveal from "@/components/motion/DoorReveal"
 import {
   conditions,
   context,
@@ -59,22 +61,23 @@ export default function OperatorPage() {
       <OperatorHero />
 
       {/* ── Decisions — the evidence ──────────────────────────── */}
-      <section className="border-b border-op-olive/20" style={section}>
+      <section id="decisions" className="border-b border-op-olive/20" style={section}>
         <div className="mx-auto w-full max-w-6xl">
           <Reveal>
             <p className="font-mono text-[11px] uppercase tracking-label text-op-olive">
               Two decisions
             </p>
-            <h2 className="display-md mt-6 text-op-ink">
-              What I&apos;d be asked about
-            </h2>
+            <MaskedHeading
+              lines={["What I'd be", "asked about"]}
+              className="display-md mt-6 text-op-ink"
+            />
             <p className="mt-6 max-w-xl text-pretty text-op-dim">
               One process, one technical. Both are things an interviewer can dig
               into, which is more than a list of capabilities offers.
             </p>
           </Reveal>
 
-          <div className="mt-16 grid gap-6 lg:grid-cols-2">
+          <DoorReveal className="mt-16 grid gap-6 lg:grid-cols-2">
             {decisions.map((d) => (
               <Reveal
                 key={d.id}
@@ -108,18 +111,18 @@ export default function OperatorPage() {
                 </dl>
               </Reveal>
             ))}
-          </div>
+          </DoorReveal>
         </div>
       </section>
 
       {/* ── Ventures ──────────────────────────────────────────── */}
-      <section className="border-b border-op-olive/20" style={section}>
+      <section id="ventures" className="border-b border-op-olive/20" style={section}>
         <div className="mx-auto w-full max-w-6xl">
           <Reveal>
             <p className="font-mono text-[11px] uppercase tracking-label text-op-olive">
               What I run
             </p>
-            <h2 className="display-md mt-6 text-op-ink">Three, honestly</h2>
+            <MaskedHeading lines={["Three,", "honestly"]} accent={1} className="display-md mt-6 text-op-ink" />
           </Reveal>
 
           {lead && (
@@ -186,22 +189,25 @@ export default function OperatorPage() {
       </section>
 
       {/* ── Rules ─────────────────────────────────────────────── */}
-      <section className="border-b border-op-olive/20" style={section}>
+      <section id="rules" className="border-b border-op-olive/20" style={section}>
         <div className="mx-auto w-full max-w-6xl">
           <Reveal>
             <p className="font-mono text-[11px] uppercase tracking-label text-op-olive">
               How the studio runs
             </p>
-            <h2 className="display-md mt-6 text-op-ink">Four rules</h2>
+            <MaskedHeading lines={["Four rules"]} className="display-md mt-6 text-op-ink" />
             <p className="mt-6 max-w-xl text-pretty text-op-dim">
               Not a process diagram. These are the four things actually enforced,
               and each exists because something went wrong without it.
             </p>
           </Reveal>
 
+          {/* Door reveal #2 of 2 on this route. The rules read as a plate
+              being opened, which suits a list of things that are enforced. */}
+          <DoorReveal className="mt-14">
           <RevealGroup
             stagger={0.05}
-            className="mt-14 divide-y divide-op-olive/20 border-y border-op-olive/20"
+            className="divide-y divide-op-olive/20 border-y border-op-olive/20"
           >
             {rules.map((r, i) => (
               <RevealItem key={r.label}>
@@ -219,20 +225,23 @@ export default function OperatorPage() {
               </RevealItem>
             ))}
           </RevealGroup>
+          </DoorReveal>
         </div>
       </section>
 
       {/* ── Looking for / contact ─────────────────────────────── */}
-      <section style={section}>
+      <section id="terms" style={section}>
         <div className="mx-auto w-full max-w-6xl">
           <Reveal className="grid gap-10 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-7">
               <p className="font-mono text-[11px] uppercase tracking-label text-op-olive">
                 Terms
               </p>
-              <h2 className="display-md mt-6 text-op-ink">
-                {context.moveHeading}
-              </h2>
+              <MaskedHeading
+                lines={["What would", "make me move"]}
+                accent={1}
+                className="display-md mt-6 text-op-ink"
+              />
               <p className="mt-6 max-w-xl text-pretty leading-relaxed text-op-dim">
                 {context.move}
               </p>

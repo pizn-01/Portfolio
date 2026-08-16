@@ -1,6 +1,7 @@
 import Section from "@/components/Section"
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/Reveal"
 import Parallax from "@/components/motion/Parallax"
+import MaskedHeading from "@/components/motion/MaskedHeading"
 import { skillGroups } from "@/lib/content/skills"
 
 /**
@@ -12,11 +13,11 @@ export default function SkillsSection() {
   return (
     <Section id="skills" layer="Interface">
       <Reveal>
-        <h2 className="display-lg text-antique">
-          The tools,
-          <br />
-          <span className="display-accent text-tan">by layer.</span>
-        </h2>
+        <MaskedHeading
+          lines={["The tools,", "by layer."]}
+          accent={1}
+          className="display-lg text-antique"
+        />
         <p className="mt-8 max-w-lg text-pretty text-muted">
           Filled marks are what I reach for by default. The rest I&apos;ve
           shipped with and would pick up again without ceremony.
